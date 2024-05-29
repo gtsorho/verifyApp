@@ -1,0 +1,34 @@
+  
+        <div class="block w-full overflow-x-auto">
+          <table class="items-center bg-transparent w-full border-collapse ">
+            <thead class="bg-gray-500 text-white">
+              <tr>
+              <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                              Certification
+                            </th>
+               <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                              Institution
+                            </th>
+              <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                              Date of Issue
+                            </th>
+              </tr>
+            </thead>
+    
+            <tbody>
+              <tr *ngFor="let certificate of certificates" class="hover:bg-gray-200">
+
+                <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
+                  {{certificate.Certificate.certificate}}
+                </td>
+                <td class="border-t-0 px-6 align-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {{certificate.Certificate.Institution.name}}
+                </td>
+                <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  {{certificate.issueDate}}
+                </td>
+              </tr>
+            </tbody>
+    
+          </table>
+        </div>

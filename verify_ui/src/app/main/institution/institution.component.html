@@ -1,0 +1,71 @@
+<section class="py-24 flex items-center min-h-screen justify-center bg-white">
+  <div class="mx-auto max-w-[43rem]">
+
+    <div class="w-full md:w-full px-3 mb-14 md:mb-10" *ngIf="institutions && institutions.length >0">
+      <label class="block capitalize tracking-wide text-gray-700 text-xs font-base mb-2" for="gender"></label>
+      <select 
+      [(ngModel)]="selectedInstitution" (change)="getInstitutionById()" [disabled]="!isAdmin"
+        class="appearance-none block w-full bg-white text-gray-500 border rounded-full px-4 mb-3 py-1 leading-tight focus:outline-none focus:bg-white"
+        id="gender" name="gender" required>
+        <option [value]="0" disabled selected>Select Institution</option>
+        <option *ngFor="let institution of institutions[0]" [value]="institution.id">{{institution.name}}</option>
+      </select>
+    </div>
+
+    <div class="text-center">
+      <p class="text-lg font-normal leading-8 text-indigo-600/95">Introducing Certifying Institution</p>
+      <h1 class="mt-3 text-[3.5rem] font-bold leading-[4rem] tracking-tight text-black">Council for Scientific and
+        Industrial Research</h1>
+      <p class="mt-3 text-lg leading-relaxed text-slate-400">Specify helps you unify your brand identity by collecting,
+        storing and distributing design tokens and assets — automatically.</p>
+    </div>
+
+    <div class="flex flex-col mx-auto justify-center items-center  pt-4" *ngIf="institutions && institutions.length >0">
+      <div
+        class="min-w-[375px] justify-center md:min-w-[700px] xl:min-w-[800px] mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
+        <div
+          class="relative flex flex-grow  items-center rounded-[10px]  border-gray-200 bg-white bg-clip-border hover:shadow-2xl shadow-lg shadow-[#F3F3F3]">
+          <div class="ml-[18px] flex h-[90px] w-auto flex-row items-center">
+            <div class="rounded-full bg-yellow-100 p-3">
+              <span class="flex items-center text-2xl  text-orange-600">
+                <i class="fa-solid fa-award"></i>
+              </span>
+            </div>
+          </div>
+          <div class="h-50 ml-4 flex w-auto flex-col justify-center">
+            <p class="font-dm text-sm font-normal text-gray-600">Certifications</p>
+            <h4 class="text-xl font-bold text-navy-700">#{{institutions[3]}}</h4>
+          </div>
+        </div>
+        <div
+          class="relative flex flex-grow  items-center rounded-[10px]  border-gray-200 bg-white bg-clip-border hover:shadow-2xl  shadow-lg shadow-[#F3F3F3]">
+          <div class="ml-[18px] flex h-[90px] w-auto flex-row items-center">
+            <div class="rounded-full bg-yellow-100 p-3">
+              <span class="flex items-center text-2xl  text-orange-600">
+                <i class="fa-solid fa-user-graduate"></i>
+              </span>
+            </div>
+          </div>
+          <div class="h-50 ml-4 flex w-auto flex-col justify-center">
+            <p class="font-dm text-sm font-normal text-gray-600">Individuals</p>
+            <h4 class="text-xl font-bold text-navy-700">#{{institutions[1]}}</h4>
+          </div>
+        </div>
+        <div
+          class="relative flex flex-grow  items-center rounded-[10px]  border-gray-200 bg-white bg-clip-border hover:shadow-2xl  shadow-lg shadow-[#F3F3F3]">
+          <div class="ml-[18px] flex h-[90px] w-auto flex-row items-center">
+            <div class="rounded-full bg-yellow-100 p-3">
+              <span class="flex items-center text-2xl  text-orange-600">
+                <i class="fa-solid fa-stamp"></i>
+              </span>
+            </div>
+          </div>
+          <div class="h-50 ml-4 flex w-auto flex-col justify-center">
+            <p class="font-dm text-sm font-normal text-gray-600">Certificates Issued</p>
+            <h4 class="text-xl font-bold text-navy-700">#{{institutions[2]}}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

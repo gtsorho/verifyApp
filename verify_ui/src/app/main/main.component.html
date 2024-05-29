@@ -1,0 +1,98 @@
+<div class="bg-gray-200 ">
+    <nav class="bg-white border-b py-3 border-gray-300 fixed top-0 w-full z-50">
+      <div class="flex justify-between items-center px-9">
+        <div class="flex justify-around">
+          <!-- <button id="menuBtn" (click)="toggleSideNav = !toggleSideNav">
+            <i class="text-gray-500 fas fa-bars text-primary-50 text-lg"></i>
+          </button> -->
+          <div class="ml-1 inline px-5" (click)="toggleSideNav = !toggleSideNav">
+            <img
+              src="./assets/shield.png"
+              alt="logo"
+              class="h-10"
+            />
+          </div>
+        </div>
+  
+        <div class="space-x-4">
+          <button>
+            <i class="text-gray-500 fas fa-bell text-primary-50 text-lg"></i>
+          </button>
+          <div class="relative inline-block text-left">
+            <button (click)="toggleDropdown()" class="w-full bg-white  text-gray-700 py-2 px-4 rounded inline-flex justify-between items-center">
+              <i class="text-gray-500 fas fa-user text-primary-50 text-lg"></i>
+            </button>
+          
+            <div *ngIf="isOpen" class="absolute z-50 mt-2 rounded-md shadow-lg w-max right-1 bg-white border border-gray-200">
+              <div class="py-1 text-gray-700 dark:text-gray-400 text-sm" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                <!-- <a href="#" class="block px-4 py-2 hover:bg-gray-100" role="menuitem">Option 1</a> -->
+                <a href="#" class="block px-4 py-2 hover:bg-gray-100" role="menuitem">{{user.username}}</a>
+                <a href="#" (click)="clearToken()" class="block px-4 py-2 hover:bg-gray-100" role="menuitem">Exit <i class="fa-solid pl-10 fa-arrow-right-from-bracket"></i></a>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </nav>
+  
+    <div class="z-50 ">
+      <div
+        id="sideNav"
+        [class.w-64]="toggleSideNav"
+        [class.w-auto]="!toggleSideNav"
+        class="lg:block pt-8  shadow-2xl bg-white h-full fixed rounded-none border-none"
+      >
+        <div class="p-4 space-y-4">
+          <div class="max-w-screen-xl mx-auto px-1 bg-white min-h-sceen">
+            <div class="grid divide-neutral-200 max-w-xl mx-auto mt-8">
+              <div class="py-1">
+                <a
+                  routerLink="/main/institution"
+                  [ngClass]="{ activeMain: activeSection == 'institution' }"
+                  (click)="activeSection = 'institution'"
+                  class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-yellow-200 hover:bg-opacity-80 focus:bg-yellow-200 focus:bg-opacity-80 active:bg-yellow-200 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                >
+                  <i class="text-gray-500 mr-4 fa-solid fa-school"></i>
+                  <span class="sideText font-light" *ngIf="toggleSideNav">Institution</span>
+                </a>
+              </div>
+              <div class="py-1">
+                <a
+                  routerLink="/main/individual"
+                  aria-label="institution"
+                  (click)="activeSection = 'Individuals'"
+                  [ngClass]="{ activeMain: activeSection == 'Individuals' }"
+                  class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-yellow-200 hover:bg-opacity-80 focus:bg-yellow-200 focus:bg-opacity-80 active:bg-yellow-200 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                >
+                  <i class="text-gray-500 mr-4 fa-solid fa-user "></i>
+                  <span class="-mr-1 font-light sideText" *ngIf="toggleSideNav"
+                    >Individuals</span
+                  >
+                </a>
+              </div>
+              <div class="py-1">
+                <a
+                  routerLink="/main/certificate"
+                  aria-label="institution"
+                  (click)="activeSection = 'certificate'"
+                  [ngClass]="{ activeMain: activeSection == 'certificate' }"
+                  class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-yellow-200 hover:bg-opacity-80 focus:bg-yellow-200 focus:bg-opacity-80 active:bg-yellow-200 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                >
+                  <i class="text-gray-500 mr-4 fa-solid fa-certificate"></i>
+                  <span class="-mr-1 font-light sideText" *ngIf="toggleSideNav"
+                    >Certificates</span
+                  >
+                </a>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="" [class.ml-64]="toggleSideNav" [class.ml-20]="!toggleSideNav">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  

@@ -1,0 +1,31 @@
+<div class="">
+    <div class="flex h-full">
+        <div class=" px-3 py-4 h-max text-white bg-gray-900">
+            <div class="mb-24 space-y-6 ">
+                <div>
+                    <img class="w-32" src="../../../assets/validation.png" alt="QR Code">
+
+                    <!-- <p class="font-bold text-xs md:text-base ">Certification</p>
+                    <p class="text-xs md:text-base">{{certificate.Certificate.certificate}}</p>
+                    <p class="text-xs md:text-base">{{certificate.Certificate.Institution.name}}</p> -->
+                </div>
+            </div>
+            <div>
+                <img class="mx-auto" [src]="'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data='+ certificate.Certificate.certificate + certificate.createdAt" alt="QR Code">
+            </div>
+
+        </div>
+        <div class="w-3/4 p-5 h-full">
+            <div class="head mb-5">
+                <h1 class="md:text-[250%]">Certificate</h1>
+                <h4 class="font-semibold text-xs md:text-base">{{certificate.Certificate.Institution.name}}</h4>
+            </div>
+
+            <div class="body ">
+                <h1 class="text-xs md:text-base">This is to Certify that </h1>
+                <h4 class="border-b-2 md:text-[250%]">{{certificate.Individual.ghana_cardNo}}</h4>
+                <p class="py-4 text-xs md:text-base">{{certificate.Certificate.description}}</p>
+            </div>
+        </div>
+    </div>
+</div>
