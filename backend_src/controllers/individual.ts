@@ -142,7 +142,7 @@ export default {
         if (req.decodedToken?.role === "organization") {
             const certificate = await db.certificate.findByPk(CertificateId);
 
-            if (!certificate || certificate.InstitutionId !== req.decodedToken.InstitutionId) {
+            if (!certificate || certificate.InstitutionId !== req.decodedToken.InstitutionID) {
                 return res.status(403).json({ message: 'Access denied. Certificate does not belong to your institution' });
             }
         }
