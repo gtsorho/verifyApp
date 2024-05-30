@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:frontend": "cd verify_ui && npm install && npm run build",
-    "start:backend": "node dist/app.js",
+    "start:backend": "npm install && tsc && node dist/app.js",
     "start:all": "npm run build:frontend && npm run start:backend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
