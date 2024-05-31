@@ -13,6 +13,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const sequelize = new sequelize_1.Sequelize(process.env.DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
+    port: 3306,
     dialect: 'mysql',
     logging: false
 });

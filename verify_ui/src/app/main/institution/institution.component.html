@@ -1,5 +1,5 @@
 <section class="py-24 flex items-center min-h-screen justify-center bg-white">
-  <div class="mx-auto max-w-[43rem]">
+  <div class="mx-auto max-w-[43rem] min-w-[20rem]">
 
     <div class="w-full md:w-full px-3 mb-14 md:mb-10" *ngIf="institutions && institutions.length >0">
       <label class="block capitalize tracking-wide text-gray-700 text-xs font-base mb-2" for="gender"></label>
@@ -22,9 +22,9 @@
 
     <div class="flex flex-col mx-auto justify-center items-center  pt-4" *ngIf="institutions && institutions.length >0">
       <div
-        class="min-w-[375px] justify-center md:min-w-[700px] xl:min-w-[800px] mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
+        class=" justify-center md:min-w-[700px] xl:min-w-[800px] mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         <div
-          class="relative flex flex-grow  items-center rounded-[10px]  border-gray-200 bg-white bg-clip-border hover:shadow-2xl shadow-lg shadow-[#F3F3F3]">
+          class="relative px-4 flex flex-grow  items-center rounded-[10px]  border-gray-200 bg-white bg-clip-border hover:shadow-2xl shadow-lg shadow-[#b6b6b6]">
           <div class="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div class="rounded-full bg-yellow-100 p-3">
               <span class="flex items-center text-2xl  text-orange-600">
@@ -34,11 +34,11 @@
           </div>
           <div class="h-50 ml-4 flex w-auto flex-col justify-center">
             <p class="font-dm text-sm font-normal text-gray-600">Certifications</p>
-            <h4 class="text-xl font-bold text-navy-700">#{{institutions[3]}}</h4>
+            <h4 class="text-xl md:text-start font-bold text-navy-700">#{{institutions[3]}}</h4>
           </div>
         </div>
         <div
-          class="relative flex flex-grow  items-center rounded-[10px]  border-gray-200 bg-white bg-clip-border hover:shadow-2xl  shadow-lg shadow-[#F3F3F3]">
+          class="relative px-4 flex flex-grow  items-center rounded-[10px]  border-gray-200 bg-white bg-clip-border hover:shadow-2xl  shadow-lg shadow-[#b6b6b6]">
           <div class="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div class="rounded-full bg-yellow-100 p-3">
               <span class="flex items-center text-2xl  text-orange-600">
@@ -48,11 +48,11 @@
           </div>
           <div class="h-50 ml-4 flex w-auto flex-col justify-center">
             <p class="font-dm text-sm font-normal text-gray-600">Individuals</p>
-            <h4 class="text-xl font-bold text-navy-700">#{{institutions[1]}}</h4>
+            <h4 class="text-xl md:text-start font-bold text-navy-700">#{{institutions[1]}}</h4>
           </div>
         </div>
         <div
-          class="relative flex flex-grow  items-center rounded-[10px]  border-gray-200 bg-white bg-clip-border hover:shadow-2xl  shadow-lg shadow-[#F3F3F3]">
+          class="relative px-4 flex flex-grow  items-center rounded-[10px]  border-gray-200 bg-white bg-clip-border hover:shadow-2xl  shadow-lg shadow-[#b6b6b6]">
           <div class="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div class="rounded-full bg-yellow-100 p-3">
               <span class="flex items-center text-2xl  text-orange-600">
@@ -62,7 +62,7 @@
           </div>
           <div class="h-50 ml-4 flex w-auto flex-col justify-center">
             <p class="font-dm text-sm font-normal text-gray-600">Certificates Issued</p>
-            <h4 class="text-xl font-bold text-navy-700">#{{institutions[2]}}</h4>
+            <h4 class="text-xl md:text-start font-bold text-navy-700">#{{institutions[2]}}</h4>
           </div>
         </div>
       </div>

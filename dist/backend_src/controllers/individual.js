@@ -151,7 +151,7 @@ exports.default = {
         const { IndividualId, organization, CertificateId, issueDate, expiryDate } = req.body;
         if (((_c = req.decodedToken) === null || _c === void 0 ? void 0 : _c.role) === "organization") {
             const certificate = yield models_1.default.certificate.findByPk(CertificateId);
-            if (!certificate || certificate.InstitutionId !== req.decodedToken.InstitutionId) {
+            if (!certificate || certificate.InstitutionId !== req.decodedToken.InstitutionID) {
                 return res.status(403).json({ message: 'Access denied. Certificate does not belong to your institution' });
             }
         }
