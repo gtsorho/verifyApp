@@ -2,6 +2,10 @@ import { Request, Response } from 'express';
 import db from '../models';
 import Joi from 'joi';
 import { Op } from 'sequelize';
+import XLSX from 'xlsx';
+import path from 'path';
+import fs from 'fs';
+
 
 const individualSchema = Joi.object({
     organization: Joi.string().allow(null),
@@ -255,5 +259,85 @@ export default {
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
         }
-    }
+    },
+    fileUpload: async (req: Request, res: Response) => {
+        if (req.file) {
+            const filePath = req.file.path;
+        
+            const workbook = XLSX.readFile(filePath);
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const data = XLSX.utils.sheet_to_json(sheet);
+            try {
+                const promises = data.map(async (row: any) => {
+                    const individual = await checkAndCreateIndividual(row['ghana_card/TIN'], row.organization);
+                    const expiryDate = row.expiryDate; 
+                    const issueDate = row.issueDate;
+                    return await handleCertificate(row.certificate, individual.id, expiryDate, issueDate);
+                  });
+                const results = await Promise.all(promises);
+                res.json(results);
+            } catch (error:any) {
+                const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+                res.status(500).json({ error: errorMessage });
+            } 
+        
+          } else {
+            res.status(400).send('No file uploaded');
+          }
+    },
+    downloadFile: (req: Request, res: Response) => {
+        const uploadDir = path.join(__dirname, '../files');
+        const filePath = path.join(uploadDir, 'template.xlsx');
+    
+        fs.access(filePath, fs.constants.F_OK, (err) => {
+          if (err) {
+            return res.status(404).send('File not found');
+          }
+    
+          res.download(filePath, 'template.xlsx', (err) => {
+            if (err) {
+              res.status(500).send('Error downloading the file');
+            }
+          });
+        });
+      }
+
+      
 }
+
+const checkAndCreateIndividual = async (ghana_card: string, organization: string) => {
+    const individual = await db.individual.findOne({ where: { ghana_card } });
+    if (!individual) {
+      return await db.individual.create({ 'ghana_card':ghana_card, 'organization':organization });
+    }
+  
+    return individual;
+  };
+
+  const handleCertificate = async (certificateName: string, individualId: number, expiryDate: string, issueDate: string) => {
+    const certificate = await db.certificate.findOne({ where: { prefix: certificateName } });
+  
+    if (!certificate) {
+      throw new Error(`Certificate ${certificateName} not found`);
+    }
+
+    const existingEntry = await db.certification_pivot.findOne({
+        where: {
+            IndividualId : individualId,
+            CertificateId : certificate.id,
+        }
+      });
+
+      if (existingEntry) {
+        throw new Error(`Duplicate entry found for IndividualId ${individualId} and CertificateId ${certificate.id}`);
+      }
+
+    const certificationPivot = await db.certification_pivot.create({
+        IndividualId : individualId,
+        CertificateId : certificate.id,
+        issueDate,
+        expiryDate
+    });
+    return certificationPivot
+  };

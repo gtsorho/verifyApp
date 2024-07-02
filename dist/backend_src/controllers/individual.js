@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = __importDefault(require("../models"));
 const joi_1 = __importDefault(require("joi"));
 const sequelize_1 = require("sequelize");
+const xlsx_1 = __importDefault(require("xlsx"));
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const individualSchema = joi_1.default.object({
     organization: joi_1.default.string().allow(null),
     ghana_card: joi_1.default.string().required()
@@ -254,5 +257,74 @@ exports.default = {
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
         }
-    })
+    }),
+    fileUpload: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (req.file) {
+            const filePath = req.file.path;
+            const workbook = xlsx_1.default.readFile(filePath);
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const data = xlsx_1.default.utils.sheet_to_json(sheet);
+            try {
+                const promises = data.map((row) => __awaiter(void 0, void 0, void 0, function* () {
+                    const individual = yield checkAndCreateIndividual(row['ghana_card/TIN'], row.organization);
+                    const expiryDate = row.expiryDate;
+                    const issueDate = row.issueDate;
+                    return yield handleCertificate(row.certificate, individual.id, expiryDate, issueDate);
+                }));
+                const results = yield Promise.all(promises);
+                res.json(results);
+            }
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+                res.status(500).json({ error: errorMessage });
+            }
+        }
+        else {
+            res.status(400).send('No file uploaded');
+        }
+    }),
+    downloadFile: (req, res) => {
+        const uploadDir = path_1.default.join(__dirname, '../files');
+        const filePath = path_1.default.join(uploadDir, 'template.xlsx');
+        fs_1.default.access(filePath, fs_1.default.constants.F_OK, (err) => {
+            if (err) {
+                return res.status(404).send('File not found');
+            }
+            res.download(filePath, 'template.xlsx', (err) => {
+                if (err) {
+                    res.status(500).send('Error downloading the file');
+                }
+            });
+        });
+    }
 };
+const checkAndCreateIndividual = (ghana_card, organization) => __awaiter(void 0, void 0, void 0, function* () {
+    const individual = yield models_1.default.individual.findOne({ where: { ghana_card } });
+    if (!individual) {
+        return yield models_1.default.individual.create({ 'ghana_card': ghana_card, 'organization': organization });
+    }
+    return individual;
+});
+const handleCertificate = (certificateName, individualId, expiryDate, issueDate) => __awaiter(void 0, void 0, void 0, function* () {
+    const certificate = yield models_1.default.certificate.findOne({ where: { prefix: certificateName } });
+    if (!certificate) {
+        throw new Error(`Certificate ${certificateName} not found`);
+    }
+    const existingEntry = yield models_1.default.certification_pivot.findOne({
+        where: {
+            IndividualId: individualId,
+            CertificateId: certificate.id,
+        }
+    });
+    if (existingEntry) {
+        throw new Error(`Duplicate entry found for IndividualId ${individualId} and CertificateId ${certificate.id}`);
+    }
+    const certificationPivot = yield models_1.default.certification_pivot.create({
+        IndividualId: individualId,
+        CertificateId: certificate.id,
+        issueDate,
+        expiryDate
+    });
+    return certificationPivot;
+});

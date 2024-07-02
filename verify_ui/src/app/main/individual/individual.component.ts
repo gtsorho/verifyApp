@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component , OnInit} from '@angular/core';
 import { LoaderService } from '../loader.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import axios from 'axios';
 import { FormsModule } from '@angular/forms';
 import { IndividualService } from './individual.service';
 import { InstitutionService } from '../institution/institution.service';
 import { LoginService } from '../../login/login.service';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
 
 interface individual {
   id?: number,
@@ -25,12 +29,11 @@ interface certification {
 @Component({
   selector: 'app-individual',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './individual.component.html',
   styleUrl: './individual.component.scss'
 })
 export class IndividualComponent implements OnInit {
-
 
 
   individual: individual = {
@@ -62,12 +65,18 @@ export class IndividualComponent implements OnInit {
     issueDate: new Date,
     expiryDate: new Date,
   }
-  isAdmin:boolean = false
+  isAdmin:boolean = true
+  uploadForm: FormGroup;
+  file: File | null = null;
 
-
-  constructor(private loaderService: LoaderService, private loginService:LoginService, private individualService: IndividualService, private institutionService: InstitutionService) {
+  constructor(private loaderService: LoaderService, private loginService:LoginService, private individualService: IndividualService, private institutionService: InstitutionService, private fb: FormBuilder) {
     this.individuals = [];
     this.showSubTable = new Array(this.individuals.length).fill(false);
+    this.uploadForm = this.fb.group({
+      file: [null, Validators.required],
+      institution: [0, Validators.required],
+      certificate: [0, Validators.required]
+    });
   }
   ngOnInit(): void {
     this.token = this.getCookie('token')
@@ -117,8 +126,6 @@ export class IndividualComponent implements OnInit {
       });
   }
 
-
-
   getIndividuals() {
     this.individualService.getIndividuals().subscribe((data) => {
       this.individuals = data
@@ -140,9 +147,11 @@ export class IndividualComponent implements OnInit {
     this.showSubTable[index] = !this.showSubTable[index];
   }
   getCertificates() {
+    this.selectedInstitution = this.uploadForm.get('institution')?.value;
     if (this.selectedInstitution) {
       this.institution = this.institutions.find((inst: { id: number; }) => inst.id === +this.selectedInstitution)
       this.certificates = this.institution.Certificates
+      console.log(this.certificates)
     }
   }
 
@@ -172,4 +181,60 @@ export class IndividualComponent implements OnInit {
     }
     return '';
   }
+
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length) {
+      this.file = input.files[0];
+      this.uploadForm.patchValue({
+        file: this.file
+      });
+    }
+  }
+
+  onSubmit() {
+    if (!this.file) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('excelFile', this.file);
+    // formData.append('certificate', this.uploadForm.get('certificate')?.value);
+
+    axios.post(`${this.baseUrl}/individual/upload`, formData,{
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    })
+      .then(response => {
+        console.log('Upload successful', response.data);
+      })
+      .catch(error => {
+        console.error('Upload failed', error);
+      });
+  }
+
+  downloadFile() {
+    axios.get(`${this.baseUrl}/individual/download`,{
+       responseType: 'blob',
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+    
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'template.xlsx'); // Set the file name
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // Clean up
+      })
+      .catch(error => {
+        console.error('Upload failed', error);
+      });
+  }
+    
+    
 }
