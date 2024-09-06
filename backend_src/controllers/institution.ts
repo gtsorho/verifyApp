@@ -38,7 +38,7 @@ export default {
             const certificateIssuedCount = await db.certification_pivot.count();
 
             const individualsAssociatedCount = await db.individual.count();
-            res.json([institutions, individualsAssociatedCount, certificateIssuedCount, certificateCount]);
+            res.json([institutions, {'individuals': individualsAssociatedCount, 'issued': certificateIssuedCount, 'certificates':certificateCount}]);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
@@ -86,7 +86,7 @@ export default {
             if (!institution) {
                 return res.status(404).json({ message: 'Institution not found' });
             }
-            res.json([[institution], certificateCount, certificateIssuedCount[0].count, individualsAssociatedCount]);
+            res.json([[institution],  {'individuals': individualsAssociatedCount, 'issued': certificateIssuedCount[0].count, 'certificates':certificateCount}]);
 
         } catch (error) {
             console.error(error);

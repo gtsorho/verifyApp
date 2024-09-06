@@ -1,105 +1,135 @@
-    <nav class="bg-white py-3 border-gray-300 fixed top-0 w-full z-50">
-      <div class="flex justify-end items-center px-9">
-        <div class="space-x-4">
-          <button *ngIf="!verify" class="text-gray-500" (click)="verify = !verify">
-            Verify <i class="fa-solid px-2 fa-fingerprint"></i>
-          </button>
-          <button *ngIf="verify" class="text-gray-500 hover:border px-4 border-amber-700 rounded-full" (click)="verify = !verify">
-            login 
-          </button>
+<div class="main">
+  <nav class="py-3 fixed top-0 w-full z-50 ">
+    <div class="flex justify-end items-center px-9">
+      <div class="space-x-4">
+        <button *ngIf="!verify" class="text-gray-500" (click)="verify = !verify">
+          Verify <i class="fa-solid px-2 fa-fingerprint"></i>
+        </button>
+        <button *ngIf="verify" class="text-gray-500 hover:border px-4 border-amber-700 rounded-full" (click)="verify = !verify">
+          login 
+        </button>
+      </div>
+    </div>
+  </nav>
+  <div class=" md:flex  h-screen items-center justify-between ">
+    <div>
+      <app-counters></app-counters>
+    </div>
+    <div class="flex-col border  min-w-96 w-1/4 h-screen bg-gradient-to-r from-transparent to-white px-6 py-14 shadow-lg rounded-[4px] " *ngIf="!verify">
+      <div class="flex h-full">        
+        <div class="my-auto w-full">
+          <div class="mb-8 flex justify-center">
+            <img class="w-1/2" src="../../assets/logo-for-website-copy.png" alt="" />
+          </div>
+          <div class="flex flex-col text-sm rounded-md">
+            <input [(ngModel)]="credentials.username"
+              class="mb-5 rounded-[4px] border p-2 hover:outline-none focus:outline-none bg-blue-50 hover:border-blue-500 "
+              type="text" placeholder="Username or Email id" />
+            <input [(ngModel)]="credentials.password"
+              class="border rounded-[4px] p-2 hover:outline-none focus:outline-none bg-blue-50 hover:border-blue-500" type="password"
+              placeholder="Password" />
+            <button *ngIf="!isLoader"
+              class="mt-5 w-full mx-auto  p-2 bg-gradient-to-r from-blue-950 bg-pink-400 text-white rounded-[4px] hover:bg-pink-400 duration-300"
+              type="button" (click)="login()">Sign in
+            </button>
+            <div class="barLoader mt-7" *ngIf="isLoader"></div>
+            <p *ngIf="isMsg" class="text-center text-pink-600 mt-10">{{msg}}</p>
+
+          </div>
+
+          <!-- <div class="mt-5 flex justify-between text-sm text-gray-600">
+            <a href="#">Forgot password?</a>
+            <a href="#">Need an Account?</a>
+          </div> -->
+          <div class="flex justify-center mt-5 text-sm">
+            <p class="text-gray-500">Request on organization's behalf send a mail to</p>
+          </div>
+          <div class="w-full flex justify-center">
+            <button disabled
+              class="mt-5  rounded-full mx-auto  px-2 py-1 bg-gradient-to-r from-pink-950 bg-blue-400 w-1/2 text-white hover:bg-pink-400 duration-300"
+              type="button">{{'miphostgh@gmail.com'}}
+            </button>
         </div>
       </div>
-    </nav>
-<div class="flex  h-screen items-center justify-center ">
-  <div class="">
-
-
-
-    <div class="flex-col min-w-96 border bg-white px-6 py-14 shadow-md rounded-[4px] " *ngIf="!verify">
+    </div>
+    <div class=" min-w-96 w-1/4 flex items-center  h-screen my-16 mx-2 bg-gradient-to-r from-transparent to-white px-6 py-14 shadow-lg rounded-[4px]" *ngIf="verify">
+      <div>
       <div class="mb-8 flex justify-center">
-        <img class="w-24"
-          src="https://assets.leetcode.com/static_assets/public/webpack_bundles/images/logo.c36eaf5e6.svg" alt="" />
+        <img class="w-1/2" src="../../assets/logo-for-website-copy.png" alt="" />
       </div>
-      <div class="flex flex-col text-sm rounded-md">
-        <input [(ngModel)]="credentials.username"
-          class="mb-5 rounded-[4px] border p-3 hover:outline-none focus:outline-none hover:border-yellow-500 "
-          type="text" placeholder="Username or Email id" />
-        <input [(ngModel)]="credentials.password"
-          class="border rounded-[4px] p-3 hover:outline-none focus:outline-none hover:border-yellow-500" type="password"
-          placeholder="Password" />
-      </div>
-      <button
-        class="mt-5 w-full border p-2 bg-gradient-to-r from-gray-800 bg-gray-500 text-white rounded-[4px] hover:bg-slate-400 scale-105 duration-300"
-        type="button" (click)="login()">Sign in</button>
-      <div class="mt-5 flex justify-between text-sm text-gray-600">
-        <a href="#">Forgot password?</a>
-        <a href="#">Need an Account?</a>
-      </div>
-      <div class="flex justify-center mt-5 text-sm">
-        <p class="text-gray-400">Request on organization's behalf</p>
-      </div>
-      <div class="w-full flex justify-center">
-        <button
-          class="mt-5 w-1/2 mx-auto bg-gradient-to-r from-yellow-800 bg-yellow-500 text-white rounded-xl hover:bg-orange-400 scale-105 duration-300">Register</button>
-      </div>
+        <span class="text-sm text-gray-700">You looking for A certificate, Do you wish to Find all Related
+          Certificates </span>
+        <label class="relative inline-flex float-endcursor-pointer items-center mx-5">
+          <input id="switch-2" type="checkbox" [(ngModel)]="findAllCert" class="peer sr-only" />
+          <label for="switch-2" class="hidden"></label>
+          <div
+            class="peer h-3 w-8 rounded-full border bg-blue-950 after:absolute after:-top-1 after:left-0 after:h-5 after:w-5 after:rounded-full after:border after:border-pink-600 after:bg-pink-600 after:transition-all after:content-[''] peer-checked:bg-blue-950 peer-checked:after:translate-x-full peer-focus:ring-blue-300">
+          </div>
+        </label>
+        <div class="  left-0  border-t border-gray-200 shadow" *ngIf="findAllCert">
+          <div class="container mx-auto px-4 py-1">
+            <form class="w-full " (submit)="verifyCertificate()">
+              <div class=" flex flex-col text-sm rounded-md py-2">
+                <input [(ngModel)]="ghana_cardNo" name="ghana_cardNo"
+                  class="mb-5 border rounded-[4px] p-2 hover:outline-none focus:outline-none bg-blue-50 hover:border-blue-500"
+                  type="text" placeholder="Ghana Card Number" aria-label="Full name">
+                
+                
+                  <div class="relative inline-block text-left">
+                    
+                    <input id="dropdown-button"  (focus)="isDropdownOpen = true" (keyup)="searchCertificate()" [(ngModel)]="searchValue" name="certificateNo"
+                      class="mb-1 border rounded-[4px] p-2 hover:outline-none focus:outline-none bg-blue-50 hover:border-blue-500 w-full"
+                      type="text" placeholder="Certificate Id" aria-label="Full name">
+
+                
+                    <div id="dropdown-menu" *ngIf="isDropdownOpen" class="origin-top-right absolute right-0 mt-0 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                      <div class="py-2 p-2" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button">
+                        <div class="barLoader mt-7" *ngIf="isSearchLoader"></div>
+                        <a *ngFor="let certificate of searchCertificates" (click)="isDropdownOpen=false; certificateVal = certificate.id; searchValue = certificate.certificate " class="block rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer" role="menuitem">
+                          {{certificate.certificate}}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                
 
 
-    </div>
 
-
-    <div class="bg-gray-100 my-16 px-3 mx-2" *ngIf="verify">
-      <span class="text-sm text-gray-700">You looking for A certificate, Do you wish to Find all Related
-        Certificates </span>
-      <label class="relative inline-flex float-endcursor-pointer items-center mx-5">
-        <input id="switch-2" type="checkbox" [(ngModel)]="findAllCert" class="peer sr-only" />
-        <label for="switch-2" class="hidden"></label>
-        <div
-          class="peer h-3 w-8 rounded-full border bg-slate-200 after:absolute after:-top-1 after:left-0 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-teal-800 peer-checked:after:translate-x-full peer-focus:ring-green-300">
+                <button
+                  class=" border-transparent border rounded-full text-teal-700 hover:text-teal-800  hover:border-teal-800   text-sm py-1 px-5"
+                  type="submit">
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </label>
-      <div class="  left-0 bg-white border-t border-gray-200 shadow" *ngIf="findAllCert">
-        <div class="container mx-auto px-4 py-2 flex justify-between items-center">
-          <form class="w-full " (submit)="verifyCertificate()">
-            <div class="flex items-center  py-2">
-              <input [(ngModel)]="ghana_cardNo" name="ghana_cardNo"
-                class="appearance-none bg-transparent border-b border-teal-800 w-full text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none"
-                type="text" placeholder="Ghana Card Number" aria-label="Full name">
-              <input [(ngModel)]="certificateVal" name="certificateNo"
-                class="appearance-none bg-transparent border-b border-teal-800 w-full text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none"
-                type="text" placeholder="Certificate Id" aria-label="Full name">
 
-              <button
-                class="flex-shrink-0 border-transparent border rounded-full text-teal-700 hover:text-teal-800  hover:border-teal-800   text-sm py-1 px-5"
-                type="submit">
-                Search
-              </button>
-            </div>
-          </form>
+        <div class="  left-0 w-full border-t border-gray-200 shadow" *ngIf="!findAllCert">
+          <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+            <form class="w-full " (submit)="relatedCertificates()">
+              <div class="flex flex-col text-sm rounded-md py-2">
+                <input name="ghana_cardNo" [(ngModel)]="ghana_cardNo"
+                  class="mb-5 border rounded-[4px] p-2 hover:outline-none focus:outline-none bg-blue-50 hover:border-blue-500 w-full"
+                  type="text" placeholder="Ghana Card Number" aria-label="Full name">
+                <button
+                  class="flex-shrink-0 border-transparent border rounded-full text-teal-700 hover:text-teal-800  hover:border-teal-800   text-sm py-1 px-5"
+                  type="submit">
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+        <div *ngIf="certificate" class=" mx-2 lg:mx-auto block shadow-xl my-10">
+        <app-certificate [certificate]="certificate"></app-certificate>
       </div>
-
-      <div class="  left-0 w-full bg-white border-t border-gray-200 shadow" *ngIf="!findAllCert">
-        <div class="container mx-auto px-4 py-2 flex justify-between items-center">
-          <form class="w-full " (submit)="relatedCertificates()">
-            <div class="flex items-center  py-2">
-              <input name="ghana_cardNo" [(ngModel)]="ghana_cardNo"
-                class="appearance-none bg-transparent border-b border-teal-800 w-full text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none"
-                type="text" placeholder="Ghana Card Number" aria-label="Full name">
-              <button
-                class="flex-shrink-0 border-transparent border rounded-full text-teal-700 hover:text-teal-800  hover:border-teal-800   text-sm py-1 px-5"
-                type="submit">
-                Search
-              </button>
-            </div>
-          </form>
-        </div>
+      <div *ngIf="certificates && certificates.length > 0" class=" mx-2 block shadow-xl my-10">
+        <app-certificates [certificates]="certificates"></app-certificates>
+      </div>
       </div>
     </div>
-    <div *ngIf="certificate" class=" mx-2 lg:mx-auto block shadow-xl my-10 lg:w-full">
-      <app-certificate [certificate]="certificate"></app-certificate>
-    </div>
-    <div *ngIf="certificates && certificates.length > 0" class=" mx-2 block shadow-xl my-10">
-      <app-certificates [certificates]="certificates"></app-certificates>
-    </div>
+     
+
   </div>
 </div>

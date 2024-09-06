@@ -13,8 +13,10 @@ import { LoginService } from '../../login/login.service';
 })
 export class InstitutionComponent {
   institutions:any
+  institutionsData:any
   isAdmin:boolean = true
-  selectedInstitution:number = 0;
+  selectedInstitutionData:any
+  selectedInstitution:any = 'all';
   constructor(private institutionService:InstitutionService, private loginService:LoginService) {}
 
   ngOnInit(): void {
@@ -31,14 +33,22 @@ export class InstitutionComponent {
 
   getInstitutions(): void {
     this.institutionService.getInstitutions().subscribe((data) => {
-      this.institutions = data;
+      this.institutions = data[0];
+      this.institutionsData = data[1]
     });
   }
 
   getInstitutionById(): void {
-    this.institutionService.getInstitutionById(this.selectedInstitution).subscribe((data) => {
-      this.institutions = data;
-    });
+    if(this.selectedInstitution != 'all'){
+      this.institutionService.getInstitutionById(this.selectedInstitution).subscribe((data) => {
+        console.log(data)
+        this.institutionsData = data[1]
+        this.selectedInstitutionData = data[0]
+        if(!this.isAdmin) this.institutions = data[0]
+      });
+    }else{
+      this.getInstitutions()
+    }
   }
 
 }

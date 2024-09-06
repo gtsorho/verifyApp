@@ -46,7 +46,7 @@ exports.default = {
             const certificateCount = yield index_1.default.certificate.count({});
             const certificateIssuedCount = yield index_1.default.certification_pivot.count();
             const individualsAssociatedCount = yield index_1.default.individual.count();
-            res.json([institutions, individualsAssociatedCount, certificateIssuedCount, certificateCount]);
+            res.json([institutions, { 'individuals': individualsAssociatedCount, 'issued': certificateIssuedCount, 'certificates': certificateCount }]);
         }
         catch (error) {
             console.error(error);
@@ -90,7 +90,7 @@ exports.default = {
             if (!institution) {
                 return res.status(404).json({ message: 'Institution not found' });
             }
-            res.json([[institution], certificateCount, certificateIssuedCount[0].count, individualsAssociatedCount]);
+            res.json([[institution], { 'individuals': individualsAssociatedCount, 'issued': certificateIssuedCount[0].count, 'certificates': certificateCount }]);
         }
         catch (error) {
             console.error(error);

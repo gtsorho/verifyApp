@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 40px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      radial-gradient(farthest-side,#e400a4 94%,#0000),
+      radial-gradient(farthest-side,#19004f 94%,#0000),
+      radial-gradient(farthest-side,#f203d6 94%,#0000),
+      radial-gradient(farthest-side,#6562ff 94%,#0000),
+      #d4009f;
+    background-size: 105% 105%;
+    background-repeat: no-repeat;
+    animation: l5 2s infinite; 
+  }
+  @keyframes l5 {
+    0%  {background-position: 50% -50px,-40px 50%, 50% calc(100% + 50px),calc(100% + 50px) 50%}
+    20%,
+    25% {background-position: 50% -50px,-50px 50%, 50% calc(100% + 50px),50% 50%}
+    45%,
+    50% {background-position: 50% -50px,-50px 50%, 50% 50%              ,50% 50%}
+    75%,
+    75% {background-position: 50% -50px, 50%  50%, 50% 50%              ,50% 50%}
+    95%,
+    100%{background-position: 50%  50% , 50%  50%, 50% 50%              ,50% 50%}
+  }
+
+  /* HTML: <div class="barLoader"></div> */
+.barLoader {
+    height: 4px;
+    width: 100%;
+    --c:no-repeat linear-gradient(#ee00ae 0 0);
+    background: var(--c),var(--c),#250150;
+    background-size: 60% 100%;
+    animation: l16 3s infinite;
+  }
+  @keyframes l16 {
+    0%   {background-position:-150% 0,-150% 0}
+    66%  {background-position: 250% 0,-150% 0}
+    100% {background-position: 250% 0, 250% 0}
+  }

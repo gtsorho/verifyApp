@@ -1,0 +1,8 @@
+.main{
+    background-image: 
+        linear-gradient(to left, rgba(255, 255, 255, 0.5), rgba(1, 2, 81, 0.794)), /* Gradient overlay */
+        url('../../assets/Ok-amico\(1\).png'); /* Background image */
+    background-size: cover; /* Ensures the background image covers the entire element */
+    background-position: center; /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents background image repetition */
+}

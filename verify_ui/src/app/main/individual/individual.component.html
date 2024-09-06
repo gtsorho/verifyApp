@@ -1,5 +1,5 @@
 <div class="flex flex-wrap h-[100vh] bg-white">
-  <div class="w-full lg:w-1/2 xl:w-1/2 mb-4">
+  <div class="w-full lg:w-1/2 xl:w-1/2 mb-4" >
 
     <section class="py-1 ">
       <div class="w-full xl:w-11/12 mb-12 xl:mb-0 px-4 mx-auto mt-24">
@@ -8,16 +8,16 @@
 
           <div class="flex justify-center">
             <div class="overflow-x-auto max-h-72 w-full">
-              <table class="w-full bg-white shadow-md rounded-xl">
+              <table class="w-full bg-white shadow-md rounded-xl" *ngIf="individuals">
                 <thead>
-                  <tr class="bg-blue-gray-100  bg-orange-600 text-white font-light text-xs">
+                  <tr class="bg-blue-gray-100  bg-base text-white font-light text-xs">
                     <th class="py-3 px-4 text-left">Occupation</th>
                     <th class="py-3 px-4 text-left">Gh Card</th>
                   </tr>
                 </thead>
-                <tbody class="text-blue-gray-900">
+                <tbody class="text-blue-gray-900" >
                   <ng-container *ngFor="let individual of individuals; let i = index">
-                    <tr class="border-b border-blue-gray-200 text-xs hover:bg-orange-100 cursor-pointer"
+                    <tr class="border-b border-blue-gray-100 text-xs hover:bg-blue-200 cursor-pointer"
                       (click)="toggleSubTable(i)">
                       <td class="py-3 align-baseline px-4">
                         {{ individual.organization}}
@@ -32,7 +32,7 @@
                         <table *ngIf="individual.Certificates && individual.Certificates.length > 0"
                           class="min-w-full bg-white shadow-md ">
                           <thead>
-                            <tr class="bg-blue-gray-100 bg-orange-400 text-white font-light text-xs">
+                            <tr class="bg-blue-gray-100 bg-blue-900 text-white font-light text-xs">
                               <th class="py-3 px-4 text-left">Certificate</th>
                               <th class="py-3 px-4 text-left">Institution</th>
                               <th class="py-3 px-4 text-left">Issued</th>
@@ -59,7 +59,7 @@
                   </ng-container>
                 </tbody>
               </table>
-
+              <div class="loader mx-auto" *ngIf="!individuals"></div> 
             </div>
           </div>
         </div>
@@ -70,11 +70,11 @@
     <div class="mt-24">
       <div class="max-w-md mx-2 md:mx-auto my-5">
         <div class="mb-4 flex space-x-4 p-1 rounded bg-white shadow-lg">
-          <button (click)="openTab = 1" [class.bg-orange-600]="openTab === 1" [class.text-white]="openTab === 1"
-            class="flex-1 py-2 px-4 md:text-sm text-[11px] rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300">
+          <button (click)="openTab = 1" [class.bg-base]="openTab === 1" [class.text-white]="openTab === 1"
+            class="flex-1 py-2 px-4 md:text-sm text-[11px]  rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300">
             <i class="fa-solid fa-plus"></i> Individual
           </button>
-          <button (click)="openTab = 2" [class.bg-orange-600]="openTab === 2" [class.text-white]="openTab === 2"
+          <button (click)="openTab = 2" [class.bg-base]="openTab === 2" [class.text-white]="openTab === 2"
             class="flex-1 py-2 px-4 md:text-sm text-[11px] rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300">
             <i class="fa-solid fa-plus"></i> Certification
           </button>
@@ -103,9 +103,11 @@
             </div>
 
             <div class="flex justify-end">
-              <button type="submit"
-                class="px-7 py-1 border  text-black border-yellow-600 hover:bg-orange-600 hover:text-black rounded-lg shadow-2xl">Add
+              <button *ngIf="!isLoader"  type="submit"
+                class="px-7 py-1 border  text-black border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Add
               </button>
+              <div class="barLoader" *ngIf="isLoader"></div>
+              <p class="text-pink-600 text-center mt-10" *ngIf="isMsg">{{msg}}</p>
             </div>
           </form>
         </div>
@@ -117,43 +119,43 @@
           <form class="w-full max-w-lg xl:mb-0 px-4 mx-auto py-8 rounded-md" (submit)="createCertification()">
 
             <div class="flex flex-wrap -mx-3 mb-6">
-              <div class="relative inline-block text-left w-full pb-3 md:w-full px-3 mb-6 md:mb-0">
+              <div class="relative inline-block text-left w-full pb-3 md:w-full px-3 mb-6 md:mb-0" #myElement>
                 <div>
-                  <label class="block capitalize tracking-wide text-gray-700 text-xs font-base mb-2"
-                    for="gender">Individual</label>
+                  <label class="block capitalize tracking-wide text-gray-700 text-xs font-base mb-2" for="gender">Individual</label>
                   <span class="rounded-md shadow-sm">
-                    <button (click)="toggleDropdown()" type="button"
-                      class="inline-flex justify-between w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium text-gray-700 shadow-sm focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150">
-                      <span>Select Individual</span>
+                    <button (click)="toggleDropdown()" type="button" class="dropdown-toggle inline-flex justify-between w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium text-gray-700 shadow-sm focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150">
+                      <span class="overflow-scroll text-nowrap">{{ getSelectedIndividuals() }}</span>
                       <svg *ngIf="isOpen" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                          d="M10 12a1 1 0 0 1-.707-.293l-4-4a1 1 0 1 1 1.414-1.414L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-.707.293z" />
+                        <path fill-rule="evenodd" d="M10 12a1 1 0 0 1-.707-.293l-4-4a1 1 0 1 1 1.414-1.414L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-.707.293z" />
                       </svg>
                     </button>
                   </span>
                 </div>
-                <div *ngIf="isOpen" class="absolute z-10 mt-2  w-5/6 px-3 py-3  rounded-md bg-white border shadow-2xl">
-                  <div class="rounded-md bg-white shadow-xs">
-                    <div class="relative grid gap-1">
-                      <label *ngFor="let individual of individuals; let i = index" class="inline-flex items-center">
-                        <input
-                        [(ngModel)]="selectedOptions[i].checked"
-                        type="checkbox"
-                        [checked]="selectedOptions[i].checked"
-                        [name]="'option'+i"
-                        class="form-checkbox h-4 w-4 text-indigo-600">
-                        <span class="ml-2">{{ individual.ghana_card }}</span>
-                      </label>
+                <span >
+                  <div #myElement *ngIf="isOpen" class="absolute z-10 mt-2 w-5/6 px-3 py-3 rounded-md bg-white border shadow-2xl">
+                    <div class="rounded-md bg-white shadow-xs">
+                      <div class="relative grid gap-1">
+                        <label *ngFor="let individual of individuals; let i = index" class="inline-flex items-center">
+                          <input
+                          [(ngModel)]="selectedOptions[i].checked"
+                          type="checkbox"
+                          [checked]="selectedOptions[i].checked"
+                          [name]="'option'+i"
+                          class="form-checkbox h-4 w-4 text-indigo-600">
+                          <span class="ml-2">{{ individual.ghana_card }}</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="mt-2">
+                      <button (click)="initializeSelectedOptions()" type="button" class="bg-red-500 hover:bg-red-600 w-full text-white px-4 py-1 rounded-md">
+                        Clear Selection
+                      </button>
                     </div>
                   </div>
-                  <div class="mt-2">
-                    <button (click)="initializeSelectedOptions()" type="button"
-                      class="bg-red-500 hover:bg-red-600 w-full text-white px-4 py-1 rounded-md">
-                      Clear Selection
-                    </button>
-                  </div>
-                </div>
+                </span>
               </div>
+              
+              
 
 
 
@@ -197,43 +199,55 @@
             </div>
 
             <div class="flex justify-end">
-              <button type="submit"
-                class="px-7 py-1 border  text-black border-yellow-600 hover:bg-orange-600 hover:text-black rounded-lg shadow-2xl">Add
+              <button  *ngIf="!isLoader" type="submit"
+                class="px-7 py-1 border  text-black border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Add
               </button>
+              <div class="barLoader" *ngIf="isLoader"></div>
+              <p class="text-pink-600 text-center mt-10" *ngIf="isMsg">{{msg}}</p>
+
             </div>
           </form>
         </div>
-        <div class="transition-all duration-300 mt-4 bg-white p-4 border-l-4 shadow-2xl border-primary-50">
-          <h2 class="text-md font-semibold mb-2 inline text-primary-50">Upload File</h2>
+        <div *ngIf="openTab === 1" class="transition-all duration-300 mt-4 bg-white p-4 border-l-4 shadow-2xl border-primary-50">
+          <h2 class="text-md font-semibold mb-2 inline text-primary-50">Import Individuals</h2>
           <p class="text-xs text-end"> 
-            <button class="bg-green-700 hover:bg-green-600 text-white p-1 rounded-md" (click)="downloadFile()">Download</button> Excel Template 
+            <button class="bg-pink-700 hover:bg-pink-600 text-white p-1 rounded-md" (click)="downloadIndividualFile()">Download</button> Excel Template 
           </p>
-          <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="w-full max-w-lg xl:mb-0 px-4 mx-auto py-2 rounded-md">
+          <form [formGroup]="uploadForm" (ngSubmit)="importIndividual()" class="w-full max-w-lg xl:mb-0 px-4 mx-auto py-2 rounded-md">
             <div class="flex flex-wrap -mx-3 mb-1">
               <div class="w-full md:w-full px-3 mb-6 md:mb-0">
                 <label for="file">Choose file</label>
                 <input type="file" id="file" (change)="onFileChange($event)" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded px-4 mb-3 py-2 leading-tight focus:outline-none focus:bg-white text-xs" formControlName="file">
               </div>
-              <!-- <div class="w-1/2 md:w-1/2 px-3 mb-6 md:mb-0">
-                <label class="block capitalize tracking-wide text-gray-700 text-xs font-base mb-2" for="institution">Institution</label>
-                <select id="institution" (change)="getCertificates()" [disabled]="!isAdmin" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded px-4 mb-3 py-2 leading-tight focus:outline-none focus:bg-white" formControlName="institution">
-                  <option [value]="0" disabled>Select Institution</option>
-                  <option *ngFor="let institution of institutions" [value]="institution.id">{{institution.name}}</option>
-                </select>
-              </div>
-              <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                <label class="block capitalize tracking-wide text-gray-700 text-xs font-base mb-2" for="certificate">Certification</label>
-                <select id="certificate" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded px-4 mb-3 py-2 leading-tight focus:outline-none focus:bg-white" formControlName="certificate">
-                  <option [value]="0" disabled selected>Select Certification</option>
-                  <option *ngFor="let certificate of certificates" [value]="certificate.id">{{certificate.certificate}}</option>
-                </select>
-              </div> -->
             </div>
             <div class="flex justify-end">
-              <button type="submit" class="px-7 py-1 border text-black border-yellow-600 hover:bg-orange-600 hover:text-black rounded-lg shadow-2xl">Upload</button>
+              <div class="barLoader" *ngIf="isUploadLoader"></div>
+              <p class="text-pink-600 text-center mt-10" *ngIf="isMsg">{{msg}}</p>
+              <button type="submit"  *ngIf="!isUploadLoader" class="px-7 py-1 border text-black border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Upload</button>
             </div>
           </form>
         </div>
+        <div *ngIf="openTab === 2"  class="transition-all duration-300 mt-4 bg-white p-4 border-l-4 shadow-2xl border-primary-50">
+          <h2 class="text-md font-semibold mb-2 inline text-primary-50">Import Certifications</h2>
+          <p class="text-xs text-end"> 
+            <button class="bg-pink-700 hover:bg-pink-600 text-white p-1 rounded-md" (click)="downloadCertificationFile()">Download</button> Excel Template 
+          </p>
+          <form [formGroup]="uploadForm" (ngSubmit)="importCertification()" class="w-full max-w-lg xl:mb-0 px-4 mx-auto py-2 rounded-md">
+            <div class="flex flex-wrap -mx-3 mb-1">
+              <div class="w-full md:w-full px-3 mb-6 md:mb-0">
+                <label for="file">Choose file</label>
+                <input type="file" id="file" (change)="onFileChange($event)" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded px-4 mb-3 py-2 leading-tight focus:outline-none focus:bg-white text-xs" formControlName="file">
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <div class="barLoader" *ngIf="isUploadLoader"></div>
+              <p class="text-pink-600 text-center mt-10" *ngIf="isMsg">{{msg}}</p>
+              <button type="submit" *ngIf="!isUploadLoader" class="px-7 py-1 border text-black border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Upload</button>
+            </div>
+          </form>
+        </div>
+
+
         
       </div>
     </div>

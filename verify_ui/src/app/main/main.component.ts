@@ -54,6 +54,7 @@ export class MainComponent {
   activeSection: string | null = 'dashboard';
   isOpen = false;
   user:any
+  isAdmin: boolean = false;
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -71,6 +72,7 @@ export class MainComponent {
 
   ngOnInit() {
     this.checkTokenExpiration();
+    this.verifyAdmin()
     const childRoute = this.route.snapshot.firstChild?.routeConfig?.path;
     this.activeSection = childRoute || 'dashboard';
     this.loaderService.getUserById().subscribe((data) => {
@@ -118,5 +120,14 @@ export class MainComponent {
     d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
     let expires = 'expires=' + d.toUTCString();
     document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
+  }
+
+  verifyAdmin(){
+    const data = this.loginService.getDecodedToken();
+    if(data.role == 'admin'){
+      this.isAdmin = true;
+    }else{
+      this.isAdmin = false;
+    }
   }
 }

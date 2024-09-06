@@ -8,17 +8,25 @@ import { LoaderService } from '../loader.service';
 })
 export class IndividualService {
 
-  private token: string = this.getCookie('token');
   constructor(private loaderService: LoaderService) { }
   private baseUrl = this.loaderService.baseUrl()
 
   getIndividuals(): Observable<any> {
+    const token = this.getCookie('token');
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error('token is not provided');
+        observer.complete();
+      });
+    }
+
+    console.log(token)
     const url = `${this.baseUrl}/individual`;
     return new Observable((observer) => {
       axios
         .get(url, {
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
@@ -32,11 +40,12 @@ export class IndividualService {
   }
   verifyCert(ghana_cardNo: string, certificateNo: string): Observable<any> {
     const url = `${this.baseUrl}/individual/verify?ghana_cardNo=${ghana_cardNo}&certificate=${certificateNo}`;
+    const token = this.getCookie('token');
     return new Observable((observer) => {
       axios
         .get(url, {
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
@@ -52,11 +61,12 @@ export class IndividualService {
 
   getRelatedCerts(ghana_cardNo: string): Observable<any> {
     const url = `${this.baseUrl}/individual/related?ghana_cardNo=${ghana_cardNo}`;
+    const token = this.getCookie('token');
     return new Observable((observer) => {
       axios
         .get(url, {
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {

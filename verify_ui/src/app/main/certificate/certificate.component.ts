@@ -27,6 +27,9 @@ interface Certificate {
 })
 export class CertificateComponent {
   institutions: any;
+  isLoader: boolean = false
+  isMsg: boolean = false
+  msg: any;
   constructor(private certificateService: CertificateService, private loginService: LoginService, private institutionService: InstitutionService, private loaderService: LoaderService) { }
 
   token: string = ''
@@ -57,12 +60,19 @@ export class CertificateComponent {
 
 
   createCertificate() {
+    this.isLoader = true
     axios.post(this.baseUrl + '/certificate', this.certificate,
       { 'headers': { 'authorization': 'Bearer ' + this.token } }
     ).then((response) => {
       this.getCertificates()
+      this.isLoader = false
     }).catch((error) => {
       console.log(error);
+      this.isMsg = true
+      this.msg = error.response.data.message
+      setInterval(() => {
+        this.isMsg = false
+      }, 3000);
     })
   }
 

@@ -150,9 +150,9 @@ exports.default = {
         }
     }),
     populateCertificationPivot: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        var _c;
+        var _a;
         const { IndividualId, organization, CertificateId, issueDate, expiryDate } = req.body;
-        if (((_c = req.decodedToken) === null || _c === void 0 ? void 0 : _c.role) === "organization") {
+        if (((_a = req.decodedToken) === null || _a === void 0 ? void 0 : _a.role) === "organization") {
             const certificate = yield models_1.default.certificate.findByPk(CertificateId);
             if (!certificate || certificate.InstitutionId !== req.decodedToken.InstitutionID) {
                 return res.status(403).json({ message: 'Access denied. Certificate does not belong to your institution' });

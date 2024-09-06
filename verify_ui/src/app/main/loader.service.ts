@@ -14,18 +14,42 @@ export class LoaderService {
   }
   constructor(private loginService: LoginService,
   ) { }
-  private token: string = this.getCookie('token');
-  private id = this.loginService.getTokenData('id');
+  
 
   getUserById(): Observable<any> {
-    const url = `${this.baseUrl()}/users/${this.id}`;
+    const id = this.loginService.getTokenData('id');
+    if (!id) {
+      return new Observable((observer) => {
+        observer.error('User ID is not provided');
+        observer.complete();
+      });
+    }
+  
+    const url = `${this.baseUrl()}/users/${id}`;
+    const token = this.getCookie('token');
     return new Observable((observer) => {
       axios
         .get(url, {
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            Authorization: `Bearer ${token}`,
           },
         })
+        .then((response) => {
+          observer.next(response.data);
+          observer.complete();
+        })
+        .catch((error) => {
+          observer.error(error);
+        });
+    });
+  }
+  
+
+  
+  getData(): Observable<any> {
+    const url = `${this.baseUrl()}/institutions/home`;
+    return new Observable((observer) => {
+      axios.get(url)
         .then((response) => {
           observer.next(response.data);
           observer.complete();

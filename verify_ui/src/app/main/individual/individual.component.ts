@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component , OnInit} from '@angular/core';
+import { Component , OnInit, Renderer2, ElementRef, ViewChild, AfterViewInit, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import { LoaderService } from '../loader.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import axios from 'axios';
@@ -33,14 +33,14 @@ interface certification {
   templateUrl: './individual.component.html',
   styleUrl: './individual.component.scss'
 })
-export class IndividualComponent implements OnInit {
+export class IndividualComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   individual: individual = {
     organization: '',
     ghana_card: ''
   }
-
+  clickListener: any;
   token: string = "";
   openTab: number = 1;
   baseUrl: string = this.loaderService.baseUrl()
@@ -69,7 +69,19 @@ export class IndividualComponent implements OnInit {
   uploadForm: FormGroup;
   file: File | null = null;
 
-  constructor(private loaderService: LoaderService, private loginService:LoginService, private individualService: IndividualService, private institutionService: InstitutionService, private fb: FormBuilder) {
+  @ViewChild('myElement') elementRef!: ElementRef;
+isLoader: boolean = false;
+isUploadLoader: boolean = false;
+isMsg: boolean = false
+  msg: any;
+
+  constructor(private loaderService: LoaderService,
+     private loginService:LoginService, 
+     private individualService: IndividualService, 
+     private institutionService: InstitutionService, 
+     private fb: FormBuilder,
+     private renderer: Renderer2,
+     private cd: ChangeDetectorRef) {
     this.individuals = [];
     this.showSubTable = new Array(this.individuals.length).fill(false);
     this.uploadForm = this.fb.group({
@@ -78,6 +90,7 @@ export class IndividualComponent implements OnInit {
       certificate: [0, Validators.required]
     });
   }
+
   ngOnInit(): void {
     this.token = this.getCookie('token')
     this.getIndividuals()
@@ -90,17 +103,44 @@ export class IndividualComponent implements OnInit {
         this.getInstitutions()
       }
     }
+
+    ngAfterViewInit(): void {
+      this.clickListener = this.renderer.listen('document', 'click', (event) => {
+        if (this.elementRef && !this.elementRef.nativeElement.contains(event.target) && !event.target.closest('.dropdown-toggle')) {
+          this.isOpen = false;
+        }
+      });
+    }
+
+    ngOnDestroy() {
+      if (this.clickListener) {
+        this.clickListener();
+      }
+    }
+
   createIndividual() {
+    this.isLoader = true
     axios.post(this.baseUrl + '/individual', this.individual,
       { 'headers': { 'authorization': 'Bearer ' + this.token } }
     ).then((response) => {
       this.getIndividuals()
+      this.individual = {
+        organization: '',
+        ghana_card: ''
+      }
+      this.isLoader = false
     }).catch((error) => {
       console.log(error);
+      this.isMsg = true
+      this.msg = error.response.data.message
+      setInterval(() => {
+        this.isMsg = false
+      }, 3000);
     })
   }
 
   createCertification() {
+    this.isLoader = true
     const selected = this.selectedOptions.filter(option => option.checked);
     const axiosFunction = async (individual: any) => {
       this.certification.IndividualId = individual.id;
@@ -116,6 +156,14 @@ export class IndividualComponent implements OnInit {
         results.forEach((result, index) => {
           if (result.status === 'fulfilled') {
             console.log(`Request for ${selected[index].id} succeeded:`, result.value);
+            this.isLoader = false
+            this.certification =  {
+              CertificateId: '',
+              IndividualId: '',
+              issueDate: new Date,
+              expiryDate: new Date,
+            }
+
           } else {
             console.error(`Request for ${selected[index].id} failed:`, result.reason);
           }
@@ -123,6 +171,11 @@ export class IndividualComponent implements OnInit {
       })
       .catch(error => {
         console.error('Error with requests:', error);
+        this.isMsg = true
+        this.msg = error.response.data.message
+        setInterval(() => {
+          this.isMsg = false
+        }, 3000);
       });
   }
 
@@ -141,17 +194,18 @@ export class IndividualComponent implements OnInit {
   getInstitutionById(): void {
     this.institutionService.getInstitutionById(this.selectedInstitution).subscribe((data) => {
       this.institutions = data[0];
+      this.getCertificates()
     });
   }
   toggleSubTable(index: number): void {
     this.showSubTable[index] = !this.showSubTable[index];
   }
   getCertificates() {
-    this.selectedInstitution = this.uploadForm.get('institution')?.value;
+    // this.selectedInstitution = this.uploadForm.get('institution')?.value;
+
     if (this.selectedInstitution) {
       this.institution = this.institutions.find((inst: { id: number; }) => inst.id === +this.selectedInstitution)
       this.certificates = this.institution.Certificates
-      console.log(this.certificates)
     }
   }
 
@@ -165,6 +219,13 @@ export class IndividualComponent implements OnInit {
       id: individual.id || 0,
       checked: false
     }));
+  }
+
+  getSelectedIndividuals(): string {
+    const selected = this.individuals
+      .filter((_, index) => this.selectedOptions[index].checked)
+      .map(individual => individual.ghana_card);
+    return selected.length > 0 ? selected.join(', ') : 'Select Individual';
   }
 
   getCookie(cname: string) {
@@ -192,7 +253,8 @@ export class IndividualComponent implements OnInit {
     }
   }
 
-  onSubmit() {
+  importCertification() {
+    this.isUploadLoader = true
     if (!this.file) {
       return;
     }
@@ -201,21 +263,53 @@ export class IndividualComponent implements OnInit {
     formData.append('excelFile', this.file);
     // formData.append('certificate', this.uploadForm.get('certificate')?.value);
 
-    axios.post(`${this.baseUrl}/individual/upload`, formData,{
+    axios.post(`${this.baseUrl}/individual/upload_cert`, formData,{
       headers: {
         Authorization: `Bearer ${this.token}`,
       },
     })
       .then(response => {
         console.log('Upload successful', response.data);
+        this.isUploadLoader = false
       })
       .catch(error => {
         console.error('Upload failed', error);
+        this.isMsg = true
+        this.msg = error.response.data.message
+        setInterval(() => {
+          this.isMsg = false
+        }, 3000);
       });
   }
 
-  downloadFile() {
-    axios.get(`${this.baseUrl}/individual/download`,{
+  importIndividual() {
+    this.isUploadLoader = true
+    if (!this.file) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append('excelFile', this.file);
+    axios.post(`${this.baseUrl}/individual/upload_Ind`, formData,{
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    })
+      .then(response => {
+        console.log('Upload successful', response.data);
+        this.isUploadLoader = false
+      })
+      .catch(error => {
+        console.error('Upload failed', error);
+        this.isMsg = true
+        this.msg = error.response.data.message
+        setInterval(() => {
+          this.isMsg = false
+        }, 3000);
+      });
+  }
+
+  downloadCertificationFile() {
+    axios.get(`${this.baseUrl}/individual/download_cert`,{
        responseType: 'blob',
       headers: {
         Authorization: `Bearer ${this.token}`,
@@ -226,7 +320,29 @@ export class IndividualComponent implements OnInit {
     
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'template.xlsx'); // Set the file name
+        link.setAttribute('download', 'certificationTemplate.xlsx'); // Set the file name
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // Clean up
+      })
+      .catch(error => {
+        console.error('Upload failed', error);
+      });
+  }
+
+  downloadIndividualFile() {
+    axios.get(`${this.baseUrl}/individual/download_Ind`,{
+       responseType: 'blob',
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+    
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'individualTemplate.xlsx'); // Set the file name
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link); // Clean up

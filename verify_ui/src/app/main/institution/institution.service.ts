@@ -8,17 +8,18 @@ import { LoaderService } from '../loader.service';
 })
 export class InstitutionService {
 
-  private token: string = this.getCookie('token');
+
   constructor(private loaderService: LoaderService) { }
   private baseUrl = this.loaderService.baseUrl()
 
   getInstitutions(): Observable<any> {
+    const token = this.getCookie('token');
     const url = `${this.baseUrl}/institutions`;
     return new Observable((observer) => {
       axios
         .get(url, {
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
@@ -33,11 +34,12 @@ export class InstitutionService {
 
   getInstitutionById(id:number): Observable<any> {
     const url = `${this.baseUrl}/institutions/${id}`;
+    const token = this.getCookie('token');
     return new Observable((observer) => {
       axios
         .get(url, {
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {

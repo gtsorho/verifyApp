@@ -6,11 +6,7 @@
             <i class="text-gray-500 fas fa-bars text-primary-50 text-lg"></i>
           </button> -->
           <div class="ml-1 inline px-5" (click)="toggleSideNav = !toggleSideNav">
-            <img
-              src="./assets/shield.png"
-              alt="logo"
-              class="h-10"
-            />
+            <img class="w-24" src="../../assets/logo-for-website-copy.png" alt="" />
           </div>
         </div>
   
@@ -43,15 +39,15 @@
         [class.w-auto]="!toggleSideNav"
         class="lg:block pt-8  shadow-2xl bg-white h-full fixed rounded-none border-none"
       >
-        <div class="p-4 space-y-4">
-          <div class="max-w-screen-xl mx-auto px-1 bg-white min-h-sceen">
+        <div class="p-4 space-y-4 h-full grid content-between">
+          <div class="max-w-screen-xl  px-1  bg-white min-h-sceen">
             <div class="grid divide-neutral-200 max-w-xl mx-auto mt-8">
               <div class="py-1 ">
                 <a
                   routerLink="/main/institution"
                   [ngClass]="{ activeMain: activeSection == 'institution' }"
                   (click)="activeSection = 'institution'"
-                  class="flex items-center p-2 w-fit rounded-lg text-start leading-tight transition-all hover:bg-yellow-200 hover:bg-opacity-80 focus:bg-yellow-200 focus:bg-opacity-80 active:bg-yellow-200 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                  class="flex items-center p-2 w-fit rounded-lg text-start leading-tight transition-all hover:bg-blue-300 hover:bg-opacity-80 focus:bg-blue-300 focus:bg-opacity-80 active:bg-blue-300 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
                 >
                   <i class="text-gray-500  fa-solid fa-school" [ngClass]="toggleSideNav ? 'mr-4' : ''" ></i>
                   <span class="sideText font-light w-32" *ngIf="toggleSideNav">Institution</span>
@@ -63,7 +59,7 @@
                   aria-label="institution"
                   (click)="activeSection = 'Individuals'"
                   [ngClass]="{ activeMain: activeSection == 'Individuals' }"
-                  class="flex items-center p-2 w-fit rounded-lg text-start leading-tight transition-all hover:bg-yellow-200 hover:bg-opacity-80 focus:bg-yellow-200 focus:bg-opacity-80 active:bg-yellow-200 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                  class="flex items-center p-2 w-fit rounded-lg text-start leading-tight transition-all hover:bg-blue-300 hover:bg-opacity-80 focus:bg-blue-300 focus:bg-opacity-80 active:bg-blue-300 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
                 >
                   <i class="text-gray-500 fa-solid fa-user "  [ngClass]="toggleSideNav ? 'mr-4' : ''"></i>
                   <span class="-mr-1 font-light sideText w-32" *ngIf="toggleSideNav"
@@ -77,16 +73,29 @@
                   aria-label="institution"
                   (click)="activeSection = 'certificate'"
                   [ngClass]="{ activeMain: activeSection == 'certificate' }"
-                  class="flex items-center p-2 w-fit rounded-lg text-start leading-tight transition-all hover:bg-yellow-200 hover:bg-opacity-80 focus:bg-yellow-200 focus:bg-opacity-80 active:bg-yellow-200 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                  class="flex items-center p-2 w-fit rounded-lg text-start leading-tight transition-all hover:bg-blue-300 hover:bg-opacity-80 focus:bg-blue-300 focus:bg-opacity-80 active:bg-blue-300 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
                 >
                   <i class="text-gray-500 fa-solid fa-certificate"  [ngClass]="toggleSideNav ? 'mr-4' : ''"></i>
                   <span class="-mr-1 font-light sideText w-32" *ngIf="toggleSideNav"
                     >Certificates</span
                   >
                 </a>
-              </div>
-              
+              </div>              
             </div>
+          </div>
+          <div class="py-1" *ngIf="isAdmin">
+            <a
+              routerLink="/main/settings"
+              aria-label="institution"
+              (click)="activeSection = 'settings'"
+              [ngClass]="{ activeMain: activeSection == 'settings' }"
+              class="flex items-center p-2 w-fit rounded-lg text-start leading-tight transition-all hover:bg-blue-300 hover:bg-opacity-80 focus:bg-blue-300 focus:bg-opacity-80 active:bg-blue-300 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            >
+              <i class="text-gray-500 fa-solid fa-gear"  [ngClass]="toggleSideNav ? 'mr-4' : ''"></i>
+              <span class="-mr-1 font-light sideText w-32" *ngIf="toggleSideNav"
+                >Settings</span
+              >
+            </a>
           </div>
         </div>
       </div>

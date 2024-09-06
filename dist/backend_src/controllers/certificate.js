@@ -41,9 +41,9 @@ exports.default = {
         }
     }),
     getCertificates: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        var _b;
+        var _a;
         try {
-            if (((_b = req.decodedToken) === null || _b === void 0 ? void 0 : _b.role) === "organization") {
+            if (((_a = req.decodedToken) === null || _a === void 0 ? void 0 : _a.role) === "organization") {
                 const query = {
                     where: {
                         InstitutionId: req.decodedToken.InstitutionID
@@ -69,7 +69,7 @@ exports.default = {
         }
     }),
     getCertificateById: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        var _c;
+        var _a;
         const { id } = req.params;
         try {
             const certificate = yield models_1.default.certificate.findByPk(id, {
@@ -80,7 +80,7 @@ exports.default = {
             if (!certificate) {
                 return res.status(404).json({ message: 'Certificate not found' });
             }
-            if (((_c = req.decodedToken) === null || _c === void 0 ? void 0 : _c.role) === "organization") {
+            if (((_a = req.decodedToken) === null || _a === void 0 ? void 0 : _a.role) === "organization") {
                 const query = {
                     where: {
                         InstitutionId: req.decodedToken.InstitutionID

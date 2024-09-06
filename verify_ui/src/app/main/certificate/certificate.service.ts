@@ -9,17 +9,17 @@ import { LoaderService } from '../loader.service';
 export class CertificateService {
 
 
-  private token: string = this.getCookie('token');
   constructor(private loaderService: LoaderService) { }
   private baseUrl = this.loaderService.baseUrl()
 
   getCertificates(): Observable<any> {
+    const token = this.getCookie('token');
     const url = `${this.baseUrl}/certificate`;
     return new Observable((observer) => {
       axios
         .get(url, {
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
@@ -31,6 +31,24 @@ export class CertificateService {
         });
     });
   }
+  
+  searchCertificates(searchVal:string): Observable<any> {
+    const url = `${this.baseUrl}/certificate/search?search=${searchVal}`;
+    return new Observable((observer) => {
+      axios
+        .get(url)
+        .then((response) => {
+          observer.next(response.data);
+          observer.complete();
+        })
+        .catch((error) => {
+          observer.error(error);
+        });
+    });
+  }
+  
+
+
   getCookie(cname: string) {
     let name = cname + '=';
     let ca = document.cookie.split(';');
