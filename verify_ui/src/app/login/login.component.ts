@@ -28,7 +28,7 @@ export class LoginComponent {
   constructor(private router: Router, public loaderService: LoaderService, private individualService: IndividualService, private certificateService:CertificateService) { }
   private baseUrl = this.loaderService.baseUrl()
   token: string = ''
-  verify: boolean = true
+  verify: boolean = false
   findAllCert: boolean = false;
   credentials: credentials = {
     username: '',
