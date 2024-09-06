@@ -16,7 +16,7 @@
       <app-counters></app-counters>
     </div>
     <div class="flex-col border  min-w-96 w-1/4 h-screen bg-gradient-to-r from-transparent to-white px-6 py-14 shadow-lg rounded-[4px] " *ngIf="!verify">
-      <div class="flex h-full">        
+      <div class="flex h-full" >        
         <div class="my-auto w-full">
           <div class="mb-8 flex justify-center">
             <img class="w-1/2" src="../../assets/logo-for-website-copy.png" alt="" />
@@ -46,13 +46,14 @@
           </div>
           <div class="w-full flex justify-center">
             <button disabled
-              class="mt-5  rounded-full mx-auto  px-2 py-1 bg-gradient-to-r from-pink-950 bg-blue-400 w-1/2 text-white hover:bg-pink-400 duration-300"
+              class="mt-5  rounded-full mx-auto text-sm  px-2 py-1 bg-gradient-to-r from-pink-950 bg-blue-400 w-1/2 text-white hover:bg-pink-400 duration-300"
               type="button">{{'miphostgh@gmail.com'}}
             </button>
         </div>
       </div>
     </div>
-    <div class=" min-w-96 w-1/4 flex items-center  h-screen my-16 mx-2 bg-gradient-to-r from-transparent to-white px-6 py-14 shadow-lg rounded-[4px]" *ngIf="verify">
+  </div>
+    <div *ngIf="verify" class=" min-w-96 w-1/4 flex items-center  h-screen my-16 mx-2 bg-gradient-to-r from-transparent to-white px-6 py-14 shadow-lg rounded-[4px]">
       <div>
       <div class="mb-8 flex justify-center">
         <img class="w-1/2" src="../../assets/logo-for-website-copy.png" alt="" />
@@ -131,5 +132,5 @@
     </div>
      
 
-  </div>
+
 </div>

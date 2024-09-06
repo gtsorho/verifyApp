@@ -7,12 +7,12 @@
           <label for="" class="ml-8 font-bold">Individuals</label>
 
           <div class="flex justify-center">
-            <div class="overflow-x-auto max-h-72 w-full">
+            <div class="overflow-x-auto max-h-[7in] w-full">
               <table class="w-full bg-white shadow-md rounded-xl" *ngIf="individuals">
                 <thead>
                   <tr class="bg-blue-gray-100  bg-base text-white font-light text-xs">
-                    <th class="py-3 px-4 text-left">Occupation</th>
                     <th class="py-3 px-4 text-left">Gh Card</th>
+                    <th class="py-3 px-4 text-left">Occupation</th>
                   </tr>
                 </thead>
                 <tbody class="text-blue-gray-900" >
@@ -20,10 +20,10 @@
                     <tr class="border-b border-blue-gray-100 text-xs hover:bg-blue-200 cursor-pointer"
                       (click)="toggleSubTable(i)">
                       <td class="py-3 align-baseline px-4">
-                        {{ individual.organization}}
+                        {{ individual.ghana_card}}
                       </td>
                       <td class="py-3 align-baseline px-4">
-                        {{ individual.ghana_card}}
+                        {{ individual.organization}}
                       </td>
                     </tr>
                     <tr [hidden]="!showSubTable[i]">

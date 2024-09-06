@@ -144,6 +144,7 @@ isMsg: boolean = false
     const selected = this.selectedOptions.filter(option => option.checked);
     const axiosFunction = async (individual: any) => {
       this.certification.IndividualId = individual.id;
+      this.certification.CertificateId = this.selectedCertificate.toString();
       return axios.post(this.baseUrl + '/individual/certify', this.certification, {
         headers: { 'authorization': 'Bearer ' + this.token }
       });
@@ -163,7 +164,7 @@ isMsg: boolean = false
               issueDate: new Date,
               expiryDate: new Date,
             }
-
+            this.getIndividuals()
           } else {
             console.error(`Request for ${selected[index].id} failed:`, result.reason);
           }
@@ -269,7 +270,7 @@ isMsg: boolean = false
       },
     })
       .then(response => {
-        console.log('Upload successful', response.data);
+        this.getIndividuals()
         this.isUploadLoader = false
       })
       .catch(error => {
@@ -295,7 +296,7 @@ isMsg: boolean = false
       },
     })
       .then(response => {
-        console.log('Upload successful', response.data);
+        this.getIndividuals()
         this.isUploadLoader = false
       })
       .catch(error => {
