@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = __importDefault(require("../models"));
 const joi_1 = __importDefault(require("joi"));
+const sequelize_1 = require("sequelize");
 const certificateSchema = joi_1.default.object({
     certificate: joi_1.default.string().required(),
     prefix: joi_1.default.string().required(),
@@ -129,6 +130,31 @@ exports.default = {
                 return res.status(404).json({ message: 'Certificate not found' });
             }
             res.json({ message: 'Certificate deleted successfully' });
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }),
+    searchCertificates: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const searchValue = req.query.search;
+            let queryOptions = {
+                include: [{
+                        model: models_1.default.institution,
+                    }],
+                where: {}
+            };
+            if (searchValue) {
+                queryOptions.where = Object.assign(Object.assign({}, queryOptions.where), { [sequelize_1.Op.or]: [
+                        { certificate: { [sequelize_1.Op.like]: `%${searchValue}%` } },
+                        { category: { [sequelize_1.Op.like]: `%${searchValue}%` } },
+                        { description: { [sequelize_1.Op.like]: `%${searchValue}%` } },
+                        { prefix: { [sequelize_1.Op.like]: `%${searchValue}%` } },
+                    ] });
+            }
+            const certificates = yield models_1.default.certificate.findAll(queryOptions);
+            res.json(certificates);
         }
         catch (error) {
             console.error(error);

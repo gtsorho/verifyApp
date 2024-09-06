@@ -29,9 +29,13 @@ const storage = multer.diskStorage({
   
   const upload = multer({ storage });
   
-  router.post('/upload', authenticateJWT(['admin', 'organization']),upload.single('excelFile'), individualController.fileUpload);
-  router.get('/download', authenticateJWT(['admin', 'organization']),individualController.downloadFile);
-  
+  router.post('/upload_cert', authenticateJWT(['admin', 'organization']),upload.single('excelFile'), individualController.fileUploadCertificate);
+  router.post('/upload_Ind', authenticateJWT(['admin', 'organization']),upload.single('excelFile'), individualController.fileUploadIndividual);
+
+  router.get('/download_cert', authenticateJWT(['admin', 'organization']),individualController.downloadFile);
+  router.get('/download_Ind', authenticateJWT(['admin', 'organization']),individualController.downloadIndividualFile);
+
+
   router.get('/verify', individualController.checkCertificateExists);
   router.get('/related', individualController.findRelatedCertificates);
   router.post('/', authenticateJWT(['admin', 'organization']), individualController.createIndividual);

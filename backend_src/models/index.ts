@@ -40,7 +40,8 @@ db.certificate.belongsToMany(db.individual, { through: db.certification_pivot })
 db.certification_pivot.belongsTo(db.individual) 
 db.certification_pivot.belongsTo(db.certificate)
 
-console.log('relation',db.certification_pivot.associations)
+db.user.belongsTo(db.institution) 
+db.institution.hasMany(db.user)
 
 
 sequelize.sync({alter: true, force: false})

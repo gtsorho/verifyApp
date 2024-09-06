@@ -59,7 +59,12 @@ exports.default = {
     }),
     getUsers: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const users = yield models_1.default.user.findAll();
+            const users = yield models_1.default.user.findAll({
+                include: {
+                    model: models_1.default.institution
+                },
+                attributes: { exclude: ['password'] }
+            });
             res.json(users);
         }
         catch (error) {

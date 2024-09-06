@@ -6,7 +6,7 @@ interface UserAttributes {
   password: string;
   phone: string;
   role:string;
-  InstitutionId:string
+  InstitutionId:number
 }
 
 interface UserCreationAttributes extends UserAttributes {}
@@ -31,7 +31,7 @@ export default (sequelize: Sequelize) => {
       type: DataTypes.ENUM('admin', 'organization'), 
       defaultValue: 'organization'
     },
-    InstitutionId: DataTypes.STRING,
+    InstitutionId: DataTypes.INTEGER,
   });
 
   User.beforeCreate(async (user: UserInstance) => {

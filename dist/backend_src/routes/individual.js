@@ -27,8 +27,10 @@ const storage = multer_1.default.diskStorage({
     },
 });
 const upload = (0, multer_1.default)({ storage });
-router.post('/upload', (0, auth_1.default)(['admin', 'organization']), upload.single('excelFile'), individual_1.default.fileUpload);
-router.get('/download', (0, auth_1.default)(['admin', 'organization']), individual_1.default.downloadFile);
+router.post('/upload_cert', (0, auth_1.default)(['admin', 'organization']), upload.single('excelFile'), individual_1.default.fileUploadCertificate);
+router.post('/upload_Ind', (0, auth_1.default)(['admin', 'organization']), upload.single('excelFile'), individual_1.default.fileUploadIndividual);
+router.get('/download_cert', (0, auth_1.default)(['admin', 'organization']), individual_1.default.downloadFile);
+router.get('/download_Ind', (0, auth_1.default)(['admin', 'organization']), individual_1.default.downloadIndividualFile);
 router.get('/verify', individual_1.default.checkCertificateExists);
 router.get('/related', individual_1.default.findRelatedCertificates);
 router.post('/', (0, auth_1.default)(['admin', 'organization']), individual_1.default.createIndividual);

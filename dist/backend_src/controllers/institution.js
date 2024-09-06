@@ -53,6 +53,18 @@ exports.default = {
             res.status(500).json({ message: 'Internal server error' });
         }
     }),
+    getData: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const certificateCount = yield index_1.default.certificate.count({});
+            const institutions = yield index_1.default.institution.count();
+            const individualsAssociatedCount = yield index_1.default.individual.count();
+            res.json({ 'individuals': individualsAssociatedCount, 'institutions': institutions, 'certificates': certificateCount });
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }),
     getInstitutionById: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { id } = req.params;
         try {

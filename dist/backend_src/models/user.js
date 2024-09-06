@@ -26,7 +26,7 @@ exports.default = (sequelize) => {
             type: sequelize_1.DataTypes.ENUM('admin', 'organization'),
             defaultValue: 'organization'
         },
-        InstitutionId: sequelize_1.DataTypes.STRING,
+        InstitutionId: sequelize_1.DataTypes.INTEGER,
     });
     User.beforeCreate((user) => __awaiter(void 0, void 0, void 0, function* () {
         if (user.password) {

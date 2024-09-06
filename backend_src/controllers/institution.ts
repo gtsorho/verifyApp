@@ -45,6 +45,20 @@ export default {
         }
     },
 
+    getData: async (req: Request, res: Response) => {
+        try {
+            const certificateCount = await db.certificate.count({});
+
+            const institutions = await db.institution.count();
+
+            const individualsAssociatedCount = await db.individual.count();
+            res.json({'individuals': individualsAssociatedCount, 'institutions': institutions, 'certificates':certificateCount});
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+
     getInstitutionById: async (req: Request, res: Response) => {
         const { id } = req.params;
         try {

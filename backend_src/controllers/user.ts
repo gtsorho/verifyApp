@@ -50,7 +50,12 @@ export default {
   },
   getUsers: async (req: Request, res: Response) => {
     try {
-      const users = await db.user.findAll();
+      const users = await db.user.findAll({
+        include:{
+          model:db.institution
+        },
+        attributes: { exclude: ['password'] }
+      });
       res.json(users);
     } catch (error) {
       console.error(error);

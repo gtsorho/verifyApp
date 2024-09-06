@@ -209,7 +209,9 @@ export default {
                         where: {
                             [Op.or]: [
                                 { certificate: certificate },
-                                { prefix: certificate }
+                                { prefix: certificate },
+                                { id: certificate }
+
                             ]
                         }, include: [
                             {
@@ -260,7 +262,7 @@ export default {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
-    fileUpload: async (req: Request, res: Response) => {
+    fileUploadCertificate: async (req: Request, res: Response) => {
         if (req.file) {
             const filePath = req.file.path;
         
@@ -286,16 +288,57 @@ export default {
             res.status(400).send('No file uploaded');
           }
     },
+
+    fileUploadIndividual: async (req: Request, res: Response) => {
+        if (req.file) {
+            const filePath = req.file.path;
+        
+            const workbook = XLSX.readFile(filePath);
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const data = XLSX.utils.sheet_to_json(sheet);
+            try {
+                const promises = data.map(async (row: any) => {
+                    await checkAndCreateIndividual(row['ghana_card/TIN'], row.organization);
+                  });
+                const results = await Promise.all(promises);
+                res.json(results);
+            } catch (error:any) {
+                const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+                res.status(500).json({ error: errorMessage });
+            } 
+        
+          } else {
+            res.status(400).send('No file uploaded');
+          }
+    },
     downloadFile: (req: Request, res: Response) => {
         const uploadDir = path.join(__dirname, '../files');
-        const filePath = path.join(uploadDir, 'template.xlsx');
+        const filePath = path.join(uploadDir, 'certificationTemp.xlsx');
     
         fs.access(filePath, fs.constants.F_OK, (err) => {
           if (err) {
             return res.status(404).send('File not found');
           }
     
-          res.download(filePath, 'template.xlsx', (err) => {
+          res.download(filePath, 'certificationTemp.xlsx', (err) => {
+            if (err) {
+              res.status(500).send('Error downloading the file');
+            }
+          });
+        });
+      },
+
+      downloadIndividualFile: (req: Request, res: Response) => {
+        const uploadDir = path.join(__dirname, '../files');
+        const filePath = path.join(uploadDir, 'individualsTemp.xlsx');
+    
+        fs.access(filePath, fs.constants.F_OK, (err) => {
+          if (err) {
+            return res.status(404).send('File not found');
+          }
+    
+          res.download(filePath, 'individualsTemp.xlsx', (err) => {
             if (err) {
               res.status(500).send('Error downloading the file');
             }

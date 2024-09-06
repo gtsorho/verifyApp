@@ -208,7 +208,8 @@ exports.default = {
                         where: {
                             [sequelize_1.Op.or]: [
                                 { certificate: certificate },
-                                { prefix: certificate }
+                                { prefix: certificate },
+                                { id: certificate }
                             ]
                         }, include: [
                             {
@@ -258,7 +259,7 @@ exports.default = {
             res.status(500).json({ message: 'Internal server error' });
         }
     }),
-    fileUpload: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    fileUploadCertificate: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (req.file) {
             const filePath = req.file.path;
             const workbook = xlsx_1.default.readFile(filePath);
@@ -284,14 +285,51 @@ exports.default = {
             res.status(400).send('No file uploaded');
         }
     }),
+    fileUploadIndividual: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        if (req.file) {
+            const filePath = req.file.path;
+            const workbook = xlsx_1.default.readFile(filePath);
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const data = xlsx_1.default.utils.sheet_to_json(sheet);
+            try {
+                const promises = data.map((row) => __awaiter(void 0, void 0, void 0, function* () {
+                    yield checkAndCreateIndividual(row['ghana_card/TIN'], row.organization);
+                }));
+                const results = yield Promise.all(promises);
+                res.json(results);
+            }
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+                res.status(500).json({ error: errorMessage });
+            }
+        }
+        else {
+            res.status(400).send('No file uploaded');
+        }
+    }),
     downloadFile: (req, res) => {
         const uploadDir = path_1.default.join(__dirname, '../files');
-        const filePath = path_1.default.join(uploadDir, 'template.xlsx');
+        const filePath = path_1.default.join(uploadDir, 'certificationTemp.xlsx');
         fs_1.default.access(filePath, fs_1.default.constants.F_OK, (err) => {
             if (err) {
                 return res.status(404).send('File not found');
             }
-            res.download(filePath, 'template.xlsx', (err) => {
+            res.download(filePath, 'certificationTemp.xlsx', (err) => {
+                if (err) {
+                    res.status(500).send('Error downloading the file');
+                }
+            });
+        });
+    },
+    downloadIndividualFile: (req, res) => {
+        const uploadDir = path_1.default.join(__dirname, '../files');
+        const filePath = path_1.default.join(uploadDir, 'individualsTemp.xlsx');
+        fs_1.default.access(filePath, fs_1.default.constants.F_OK, (err) => {
+            if (err) {
+                return res.status(404).send('File not found');
+            }
+            res.download(filePath, 'individualsTemp.xlsx', (err) => {
                 if (err) {
                     res.status(500).send('Error downloading the file');
                 }

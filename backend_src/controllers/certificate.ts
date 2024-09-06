@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../models';
 import Joi, { required } from 'joi';
+import { Op } from 'sequelize';
 
 const certificateSchema = Joi.object({
     certificate: Joi.string().required(),
@@ -128,6 +129,38 @@ export default {
                 return res.status(404).json({ message: 'Certificate not found' });
             }
             res.json({ message: 'Certificate deleted successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+
+    searchCertificates: async (req: Request, res: Response) => {
+        try {
+            const searchValue = req.query.search as string;
+
+            let queryOptions: any = {
+                include: [{
+                    model: db.institution,
+                }],
+                where: {}
+            };
+
+            if (searchValue) {
+                queryOptions.where = {
+                    ...queryOptions.where,
+                    [Op.or]: [
+                        { certificate: { [Op.like]: `%${searchValue}%` } },
+                        { category: { [Op.like]: `%${searchValue}%` } },
+                        { description: { [Op.like]: `%${searchValue}%` } },
+                        { prefix: { [Op.like]: `%${searchValue}%` } },
+
+                    ]
+                };
+            }
+            const certificates = await db.certificate.findAll(queryOptions);
+            res.json(certificates);
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
