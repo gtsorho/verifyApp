@@ -16,15 +16,21 @@ export class CountersComponent {
   count1 = 0;
   count2 = 0;
   count3 = 0;
+  count4 = 0;
+
 
   targetCount1 = 40;
   targetCount2 = 70;
   targetCount3 = 149;
+  targetCount4 = 23;
+
 
   // Use ViewChild to get references to the elements
   @ViewChild('counter1') counter1!: ElementRef;
   @ViewChild('counter2') counter2!: ElementRef;
   @ViewChild('counter3') counter3!: ElementRef;
+  @ViewChild('counter4') counter4!: ElementRef;
+
 
   ngAfterViewInit() {
     this.getData()
@@ -43,7 +49,7 @@ export class CountersComponent {
     observer.observe(element.nativeElement);
   }
 
-  animateCount(countProperty: 'count1' | 'count2' | 'count3', target: number) {
+  animateCount(countProperty: 'count1' | 'count2' | 'count3'| 'count4', target: number) {
     let currentCount = 0;
     const interval = setInterval(() => {
       currentCount += 1;
@@ -60,10 +66,14 @@ export class CountersComponent {
       this.targetCount1 = data.institutions;
       this.targetCount2 = data.individuals;
       this.targetCount3 = data.certificates;
+      this.targetCount4 = data.issued;
+
 
       this.setupObserver(this.counter1, () => this.animateCount('count1', this.targetCount1));
       this.setupObserver(this.counter2, () => this.animateCount('count2', this.targetCount2));
       this.setupObserver(this.counter3, () => this.animateCount('count3', this.targetCount3));
+      this.setupObserver(this.counter4, () => this.animateCount('count4', this.targetCount4));
+
     });
   }
 }

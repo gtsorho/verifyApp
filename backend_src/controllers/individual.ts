@@ -142,58 +142,64 @@ export default {
 
     populateCertificationPivot: async (req: Request, res: Response) => {
         const { IndividualId, organization, CertificateId, issueDate, expiryDate } = req.body;
-
+    
         if (req.decodedToken?.role === "organization") {
             const certificate = await db.certificate.findByPk(CertificateId);
-
+    
             if (!certificate || certificate.InstitutionId !== req.decodedToken.InstitutionID) {
                 return res.status(403).json({ message: 'Access denied. Certificate does not belong to your institution' });
             }
         }
-
+    
         try {
             const { error } = certificateIssuanceSchema.validate(req.body);
             if (error) {
                 return res.status(400).json({ error: error.details[0].message });
             }
-
+    
             if (!IndividualId || !CertificateId) {
                 return res.status(400).json({ message: 'IndividualId and CertificateId are required in the query' });
             }
-
+    
             const individual = await db.individual.findByPk(IndividualId);
             if (!individual) {
                 return res.status(404).json({ message: 'Individual not found' });
             }
-            // else{
-            //     const individual = await db.individual.create({});
-
-            // }
-
+    
             const certificate = await db.certificate.findByPk(CertificateId);
             if (!certificate) {
                 return res.status(404).json({ message: 'Certificate not found' });
             }
-
+    
+            // Check for duplicate entry
+            const existingEntry = await db.certification_pivot.findOne({
+                where: { IndividualId, CertificateId }
+            });
+    
+            if (existingEntry) {
+                return res.status(409).json({ message: 'Duplicate entry. Certification already exists for this individual and certificate.' });
+            }
+    
             const certificationPivot = await db.certification_pivot.create({
                 IndividualId,
                 CertificateId,
                 issueDate,
                 expiryDate
             });
-
+    
             const count = await db.certification_pivot.count({
-                CertificateId
-            })
-
+                where: { CertificateId }
+            });
+    
             await db.certificate.update({ count: count }, { where: { id: CertificateId } });
-
+    
             res.status(201).json(certificationPivot);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+    
     checkCertificateExists: async (req: Request, res: Response) => {
         const { ghana_cardNo, certificate } = req.query;
 

@@ -58,7 +58,8 @@ exports.default = {
             const certificateCount = yield index_1.default.certificate.count({});
             const institutions = yield index_1.default.institution.count();
             const individualsAssociatedCount = yield index_1.default.individual.count();
-            res.json({ 'individuals': individualsAssociatedCount, 'institutions': institutions, 'certificates': certificateCount });
+            const certificateIssuedCount = yield index_1.default.certification_pivot.count();
+            res.json({ 'individuals': individualsAssociatedCount, 'institutions': institutions, 'certificates': certificateCount, 'issued': certificateIssuedCount });
         }
         catch (error) {
             console.error(error);

@@ -52,7 +52,11 @@ export default {
             const institutions = await db.institution.count();
 
             const individualsAssociatedCount = await db.individual.count();
-            res.json({'individuals': individualsAssociatedCount, 'institutions': institutions, 'certificates':certificateCount});
+
+            const certificateIssuedCount = await db.certification_pivot.count();
+
+
+            res.json({'individuals': individualsAssociatedCount, 'institutions': institutions, 'certificates':certificateCount, 'issued':certificateIssuedCount});
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });

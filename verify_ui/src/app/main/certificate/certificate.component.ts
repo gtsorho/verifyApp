@@ -72,6 +72,7 @@ export class CertificateComponent {
       this.msg = error.response.data.message
       setInterval(() => {
         this.isMsg = false
+        this.isLoader = false
       }, 3000);
     })
   }

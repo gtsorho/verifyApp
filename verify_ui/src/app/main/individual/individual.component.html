@@ -59,7 +59,7 @@
                   </ng-container>
                 </tbody>
               </table>
-              <div class="loader mx-auto" *ngIf="!individuals"></div> 
+              <div class="barLoader mx-auto" *ngIf="!individuals || individuals.length == 0"></div> 
             </div>
           </div>
         </div>
@@ -106,8 +106,10 @@
               <button *ngIf="!isLoader"  type="submit"
                 class="px-7 py-1 border  text-black border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Add
               </button>
-              <div class="barLoader" *ngIf="isLoader"></div>
-              <p class="text-pink-600 text-center mt-10" *ngIf="isMsg">{{msg}}</p>
+              <div class="container">
+                <div class="barLoader" *ngIf="isLoader"></div>
+                <p class="text-pink-600 text-center mt-5" *ngIf="isMsg">{{msg}}</p>
+              </div>
             </div>
           </form>
         </div>
@@ -202,8 +204,10 @@
               <button  *ngIf="!isLoader" type="submit"
                 class="px-7 py-1 border  text-black border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Add
               </button>
-              <div class="barLoader" *ngIf="isLoader"></div>
-              <p class="text-pink-600 text-center mt-10" *ngIf="isMsg">{{msg}}</p>
+              <div class="container">
+                <div class="barLoader" *ngIf="isLoader"></div>
+                <p class="text-pink-600 text-center mt-5" *ngIf="isMsg">{{msg}}</p>
+              </div>
 
             </div>
           </form>
@@ -221,8 +225,10 @@
               </div>
             </div>
             <div class="flex justify-end">
-              <div class="barLoader" *ngIf="isUploadLoader"></div>
-              <p class="text-pink-600 text-center mt-10" *ngIf="isMsg">{{msg}}</p>
+              <div class="container">
+                <div class="barLoader" *ngIf="isUploadLoader"></div>
+                <p class="text-pink-600 text-center mt-5" *ngIf="isMsg">{{msg}}</p>
+              </div>
               <button type="submit"  *ngIf="!isUploadLoader" class="px-7 py-1 border text-black border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Upload</button>
             </div>
           </form>
@@ -240,8 +246,10 @@
               </div>
             </div>
             <div class="flex justify-end">
-              <div class="barLoader" *ngIf="isUploadLoader"></div>
-              <p class="text-pink-600 text-center mt-10" *ngIf="isMsg">{{msg}}</p>
+              <div class="container">
+                <div class="barLoader" *ngIf="isUploadLoader"></div>
+                <p class="text-pink-600 text-center mt-5" *ngIf="isMsg">{{msg}}</p>
+              </div>
               <button type="submit" *ngIf="!isUploadLoader" class="px-7 py-1 border text-black border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Upload</button>
             </div>
           </form>

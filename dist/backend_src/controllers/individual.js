@@ -170,12 +170,16 @@ exports.default = {
             if (!individual) {
                 return res.status(404).json({ message: 'Individual not found' });
             }
-            // else{
-            //     const individual = await db.individual.create({});
-            // }
             const certificate = yield models_1.default.certificate.findByPk(CertificateId);
             if (!certificate) {
                 return res.status(404).json({ message: 'Certificate not found' });
+            }
+            // Check for duplicate entry
+            const existingEntry = yield models_1.default.certification_pivot.findOne({
+                where: { IndividualId, CertificateId }
+            });
+            if (existingEntry) {
+                return res.status(409).json({ message: 'Duplicate entry. Certification already exists for this individual and certificate.' });
             }
             const certificationPivot = yield models_1.default.certification_pivot.create({
                 IndividualId,
@@ -184,7 +188,7 @@ exports.default = {
                 expiryDate
             });
             const count = yield models_1.default.certification_pivot.count({
-                CertificateId
+                where: { CertificateId }
             });
             yield models_1.default.certificate.update({ count: count }, { where: { id: CertificateId } });
             res.status(201).json(certificationPivot);

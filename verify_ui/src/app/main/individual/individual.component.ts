@@ -70,9 +70,9 @@ export class IndividualComponent implements OnInit, OnDestroy, AfterViewInit {
   file: File | null = null;
 
   @ViewChild('myElement') elementRef!: ElementRef;
-isLoader: boolean = false;
-isUploadLoader: boolean = false;
-isMsg: boolean = false
+  isLoader: boolean = false;
+  isUploadLoader: boolean = false;
+  isMsg: boolean = true
   msg: any;
 
   constructor(private loaderService: LoaderService,
@@ -135,6 +135,7 @@ isMsg: boolean = false
       this.msg = error.response.data.message
       setInterval(() => {
         this.isMsg = false
+        this.isLoader = false
       }, 3000);
     })
   }
@@ -167,6 +168,12 @@ isMsg: boolean = false
             this.getIndividuals()
           } else {
             console.error(`Request for ${selected[index].id} failed:`, result.reason);
+            this.isMsg = true
+            this.msg =  result.reason.response.data.message
+            setInterval(() => {
+              this.isMsg = false
+              this.isLoader = false
+            }, 3000);
           }
         });
       })
@@ -176,6 +183,7 @@ isMsg: boolean = false
         this.msg = error.response.data.message
         setInterval(() => {
           this.isMsg = false
+          this.isLoader = false
         }, 3000);
       });
   }
