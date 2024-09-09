@@ -35,6 +35,7 @@ const storage = multer.diskStorage({
   router.get('/download_cert', authenticateJWT(['admin', 'organization']),individualController.downloadFile);
   router.get('/download_Ind', authenticateJWT(['admin', 'organization']),individualController.downloadIndividualFile);
 
+  router.get('/search',  authenticateJWT(['admin', 'organization']), individualController.searchIndividual);
 
   router.get('/verify', individualController.checkCertificateExists);
   router.get('/related', individualController.findRelatedCertificates);

@@ -8,7 +8,7 @@ import fs from 'fs';
 
 
 const individualSchema = Joi.object({
-    organization: Joi.string().allow(null),
+    organization: Joi.string().optional().allow(null, ''),
     ghana_card: Joi.string().required()
 });
 
@@ -52,9 +52,9 @@ export default {
                         },
                     ]
                 });
-                res.json(individuals);
+                const individualsList = await db.individual.findAll({ });
+                res.json([individuals, individualsList]);
             } else {
-                console.log(req.decodedToken)
                 const institutionId = req.decodedToken?.InstitutionID
 
                 const certificates = await db.certificate.findAll({
@@ -77,7 +77,9 @@ export default {
                     }]
                 });
 
-                res.json(individuals);
+                const individualsList = await db.individual.findAll({ });
+
+                res.json([individuals,individualsList]);
 
             }
         } catch (error) {
@@ -350,7 +352,35 @@ export default {
             }
           });
         });
-      }
+      },
+
+      searchIndividual: async (req: Request, res: Response) => {
+          try {
+              const ghanaCard = req.query.searchVal;
+      
+              let individuals;
+      
+              if (ghanaCard) {
+                  individuals = await db.individual.findAll({
+                      where: {
+                          ghana_card: {
+                              [Op.like]: `%${ghanaCard}%`
+                          }
+                      }
+                  });
+              } else {
+                  individuals = await db.individual.findAll();
+              }
+      
+              res.json(individuals);
+          } catch (error) {
+              console.error(error);
+              res.status(500).json({ message: 'Internal server error' });
+          }
+      },
+      
+    
+
 
       
 }

@@ -21,7 +21,7 @@ const certificateSchema = joi_1.default.object({
     count: joi_1.default.number(),
     category: joi_1.default.string().required(),
     description: joi_1.default.string().required(),
-    InstitutionId: joi_1.default.string().allow(null)
+    InstitutionId: joi_1.default.number().allow(null)
 });
 exports.default = {
     createCertificate: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -106,10 +106,10 @@ exports.default = {
     updateCertificate: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { id } = req.params;
         try {
-            const { error } = certificateSchema.validate(req.body);
-            if (error) {
-                return res.status(400).json({ error: error.details[0].message });
-            }
+            // const { error } = certificateSchema.validate(req.body);
+            // if (error) {
+            //     return res.status(400).json({ error: error.details[0].message });
+            // }
             const [updated] = yield models_1.default.certificate.update(req.body, { where: { id } });
             if (!updated) {
                 return res.status(404).json({ message: 'Certificate not found' });

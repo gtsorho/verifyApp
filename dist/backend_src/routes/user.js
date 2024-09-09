@@ -12,4 +12,5 @@ router.post('/login', user_1.default.login);
 router.get('/', (0, auth_1.default)('admin'), user_1.default.getUsers);
 router.get('/:id', (0, auth_1.default)(['admin', 'organization']), user_1.default.getUser);
 router.delete('/:id', (0, auth_1.default)('admin'), user_1.default.destroyUser);
+router.put('/update/:id', (0, auth_1.default)('admin'), user_1.default.updateUser);
 exports.default = router;

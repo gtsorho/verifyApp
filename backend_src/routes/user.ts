@@ -9,6 +9,8 @@ router.post('/login', userController.login);
 router.get('/', authenticateJWT('admin'), userController.getUsers);
 router.get('/:id', authenticateJWT(['admin', 'organization']), userController.getUser);
 router.delete('/:id', authenticateJWT('admin'), userController.destroyUser);
+router.put('/update/:id', authenticateJWT('admin'), userController.updateUser);
+
 
 export default router;
  

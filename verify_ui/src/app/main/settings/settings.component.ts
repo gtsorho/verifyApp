@@ -33,9 +33,10 @@ interface institution {
 })
 
 
-
 export class SettingsComponent {
 
+  isUpdate: boolean = false;
+  isUpdateUser : boolean = false;
   isLoader: boolean = false
   baseUrl: string = this.loaderService.baseUrl()
   token: string = ''
@@ -99,6 +100,57 @@ export class SettingsComponent {
     this.isLoader = true
     axios.post(this.baseUrl + '/institutions', this.institution,
       { 'headers': { 'authorization': 'Bearer ' + this.token } }
+    ).then((response) => {
+      this.getInstitutions()
+      this.institution = {
+        name: '',
+        description: '',
+        location:'',
+        accreditation:'',
+      }
+      this.isLoader = false
+    }).catch((error) => {
+      console.log(error);
+      this.isMsg = true
+      this.msg = error.response.data.message || error.response.data
+      setInterval(() => {
+        this.isMsg = false
+        this.isLoader = false
+      }, 3000);
+    })
+  }
+
+
+  updateUser() {
+    this.isLoader = true
+    axios.put(this.baseUrl + '/users/update/'+this.user.id, this.user,
+      { 'headers': { 'authorization': 'Bearer ' + this.token }}
+    ).then((response) => {
+      this.getUsers()
+      this.user = {
+        username: '',
+        phone: '',
+        InstitutionId:'default',
+        password:'',
+        confirmPassword:'',
+        role:'organization'
+      }
+      this.isLoader = false
+    }).catch((error) => {
+      console.log(error);
+      this.isMsg = true
+      this.msg = error.response.data.message || error.response.data
+      setInterval(() => {
+        this.isMsg = false
+        this.isLoader = false
+      }, 3000);
+    })  
+  }
+
+  updateInstitution() {
+    this.isLoader = true
+    axios.put(this.baseUrl + '/institutions/'+ this.institution.id, this.institution,
+      { 'headers': { 'authorization': 'Bearer ' + this.token }}
     ).then((response) => {
       this.getInstitutions()
       this.institution = {

@@ -17,6 +17,15 @@ const models_1 = __importDefault(require("../models"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const schema = joi_1.default.object({
+    id: joi_1.default.optional(),
+    username: joi_1.default.string().required(),
+    phone: joi_1.default.string().allow(null),
+    role: joi_1.default.string().required(),
+    InstitutionId: joi_1.default.number().allow(null),
+    password: joi_1.default.string().required(),
+    confirmPassword: joi_1.default.string().valid(joi_1.default.ref('password')).required(),
+});
 exports.default = {
     login: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { username, password } = req.body;
@@ -35,14 +44,6 @@ exports.default = {
     }),
     createUser: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         function validExtOfficer(user) {
-            const schema = joi_1.default.object({
-                username: joi_1.default.string().required(),
-                phone: joi_1.default.string().allow(null),
-                role: joi_1.default.string().required(),
-                InstitutionId: joi_1.default.number().allow(null),
-                password: joi_1.default.string().required(),
-                confirmPassword: joi_1.default.string().valid(joi_1.default.ref('password')).required(),
-            });
             return schema.validate(user);
         }
         const { error } = validExtOfficer(req.body);
@@ -99,5 +100,19 @@ exports.default = {
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
         }
-    })
+    }),
+    updateUser: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const { id } = req.params;
+        try {
+            const [updated] = yield models_1.default.user.update(req.body, { where: { id } });
+            if (!updated) {
+                return res.status(404).json({ message: 'user not found' });
+            }
+            res.status(200).json({ message: 'update successful' });
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }),
 };

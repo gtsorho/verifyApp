@@ -6,6 +6,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const schema = Joi.object({
+  id: Joi.optional(),
+  username: Joi.string().required(),
+  phone: Joi.string().allow(null),
+  role: Joi.string().required(),
+  InstitutionId: Joi.number().allow(null),
+  password: Joi.string().required(),
+  confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+});
 
 export default {
   login: async (req: Request, res: Response) => {
@@ -27,14 +36,6 @@ export default {
   },
   createUser: async (req: Request, res: Response) => {
     function validExtOfficer(user: any) {
-      const schema = Joi.object({
-        username: Joi.string().required(),
-        phone: Joi.string().allow(null),
-        role: Joi.string().required(),
-        InstitutionId: Joi.number().allow(null),
-        password: Joi.string().required(),
-        confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-      });
       return schema.validate(user);
     }
     const { error } = validExtOfficer(req.body);
@@ -91,5 +92,20 @@ export default {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  }
+  },
+
+  updateUser: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const [updated] = await db.user.update(req.body, { where: { id } });
+        if (!updated) {
+            return res.status(404).json({ message: 'user not found' });
+        }
+        res.status(200).json({ message: 'update successful' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+},
 };

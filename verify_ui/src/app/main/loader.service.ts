@@ -8,8 +8,8 @@ import { LoginService } from '../login/login.service';
 })
 export class LoaderService {
   baseUrl() {
-    // return 'http://localhost:3000/api';
-    return 'https://verify.miphost.com/api';
+    return 'http://localhost:3000/api';
+    // return 'https://verify.miphost.com/api';
 
   }
   constructor(private loginService: LoginService,

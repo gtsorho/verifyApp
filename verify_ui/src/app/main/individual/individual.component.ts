@@ -36,6 +36,8 @@ interface certification {
 export class IndividualComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
+
+
   individual: individual = {
     organization: '',
     ghana_card: ''
@@ -68,12 +70,14 @@ export class IndividualComponent implements OnInit, OnDestroy, AfterViewInit {
   isAdmin:boolean = true
   uploadForm: FormGroup;
   file: File | null = null;
-
+  noRes:number = 0
   @ViewChild('myElement') elementRef!: ElementRef;
   isLoader: boolean = false;
   isUploadLoader: boolean = false;
   isMsg: boolean = true
   msg: any;
+  individualsList: any;
+  searchVal: string = '';
 
   constructor(private loaderService: LoaderService,
      private loginService:LoginService, 
@@ -128,7 +132,13 @@ export class IndividualComponent implements OnInit, OnDestroy, AfterViewInit {
         organization: '',
         ghana_card: ''
       }
-      this.isLoader = false
+      this.isMsg = true
+      this.msg = 'user created Successfully'
+      setInterval(() => {
+        this.isMsg = false
+        this.isLoader = false
+      }, 3000);
+
     }).catch((error) => {
       console.log(error);
       this.isMsg = true
@@ -143,6 +153,7 @@ export class IndividualComponent implements OnInit, OnDestroy, AfterViewInit {
   createCertification() {
     this.isLoader = true
     const selected = this.selectedOptions.filter(option => option.checked);
+
     const axiosFunction = async (individual: any) => {
       this.certification.IndividualId = individual.id;
       this.certification.CertificateId = this.selectedCertificate.toString();
@@ -190,11 +201,24 @@ export class IndividualComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getIndividuals() {
     this.individualService.getIndividuals().subscribe((data) => {
-      this.individuals = data
+      this.individuals = data[0]
+      this.individualsList = data[1]
       this.initializeSelectedOptions();
-
     });
   }
+
+  searchIndividuals() {
+    this.individualService.searchIndividuals(this.searchVal).subscribe((data) => {
+      this.individualsList = data
+    });
+  }
+
+  collisionRate() {
+    this.individualService.searchIndividuals(this.individual.ghana_card).subscribe((data) => {
+      this.noRes = data.length
+    });
+  }
+
   getInstitutions() {
     this.institutionService.getInstitutions().subscribe((data) => {
       this.institutions = data[0]
@@ -224,7 +248,7 @@ export class IndividualComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   initializeSelectedOptions() {
-    this.selectedOptions = this.individuals.map(individual => ({
+    this.selectedOptions = this.individualsList.map((individual:any) => ({
       id: individual.id || 0,
       checked: false
     }));
@@ -360,6 +384,9 @@ export class IndividualComponent implements OnInit, OnDestroy, AfterViewInit {
         console.error('Upload failed', error);
       });
   }
-    
+  selectedOptionsCount() {
+    const selected = this.selectedOptions.filter(option => option.checked);
+    return selected.length
+  }
     
 }

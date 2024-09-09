@@ -4,10 +4,10 @@
     <section class="py-1 ">
       <div class="w-full xl:w-11/12 mb-12 xl:mb-0 px-4 mx-auto mt-24">
         <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
-          <label for="" class="ml-8 font-bold">Certificates</label>
+          <label for="" class="ml-2 font-bold">Certificates</label>
 
           <div class="flex justify-center">
-            <div class="overflow-x-auto max-h-[6.5in]">
+            <div class="overflow-x-auto max-h-[6in]">
               <table class="min-w-full bg-white shadow-md rounded-xl"  *ngIf="certificates">
                 <thead>
                   <tr class="bg-blue-gray-100 text-white bg-base font-light text-xs">
@@ -20,19 +20,19 @@
                   </tr>
                 </thead>
                 <tbody class="text-blue-gray-900">
-                  <tr *ngFor="let certificate of certificates"
+                  <tr *ngFor="let Certificate of certificates" 
+                   (click)="certificate = Certificate; isUpdateCertificate = true"
                     class="border-b border-blue-gray-200 text-xs hover:bg-gray-50">
-                    <td class="py-3 align-baseline px-4">{{ certificate.certificate }}</td>
-                    <td class="py-3 align-baseline px-4">{{ certificate.Institution.name }}</td>
-                    <td class="py-3 align-baseline px-4">{{ certificate.prefix }}</td>
-                    <td class="py-3 align-baseline px-4">{{ certificate.count }}</td>
-                    <td class="py-3 align-baseline px-4">{{ certificate.category }}</td>
-                    <td class="py-3 align-baseline px-4">{{ certificate.description }}</td>
+                    <td class="py-3 align-baseline px-4">{{ Certificate.certificate }}</td>
+                    <td class="py-3 align-baseline px-4">{{ Certificate.Institution.name }}</td>
+                    <td class="py-3 align-baseline px-4">{{ Certificate.prefix }}</td>
+                    <td class="py-3 align-baseline px-4">{{ Certificate.count }}</td>
+                    <td class="py-3 align-baseline px-4">{{ Certificate.category }}</td>
+                    <td class="py-3 align-baseline min-w-96 px-4">{{ Certificate.description }}</td>
                   </tr>
                 </tbody>
               </table>
               <div class="barLoader mx-auto" *ngIf="!certificates || certificates.length == 0"></div> 
-
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@
         <div class="transition-all duration-300 bg-white p-4 border-l-4 shadow-2xl border-primary-50">
           <h2 class="text-md font-semibold mb-2 inline text-primary-50">Add Certificate</h2>
           <p class="text-xs text-end"></p>
-          <form class="w-full max-w-lg xl:mb-0 px-4 mx-auto py-8 rounded-md" (submit)="createCertificate()">
+          <form class="w-full max-w-lg xl:mb-0 px-4 mx-auto py-8 rounded-md" (submit)="isUpdateCertificate ? updateCertificate() : createCertificate()">
             <div class="flex flex-wrap -mx-3 mb-6">
               <div class="w-full md:w-full px-3 mb-6 md:mb-0">
                 <label class="block capitalize tracking-wide text-gray-700 text-xs font-base mb-2"
@@ -102,7 +102,17 @@
               </div>
             </div>
 
-            <div class="flex justify-end">
+            <div class="flex justify-end" *ngIf="isUpdateCertificate">
+              <button type="submit"
+              *ngIf="!isLoader"
+                class="px-7 py-1 border  text-blac border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Update
+              </button>
+              <div class="container">
+                <div class="barLoader" *ngIf="isLoader"></div>
+                <p class="text-pink-600 text-center mt-5" *ngIf="isMsg">{{msg}}</p>
+              </div>
+            </div>
+            <div class="flex justify-end" *ngIf="!isUpdateCertificate">
               <button type="submit"
               *ngIf="!isLoader"
                 class="px-7 py-1 border  text-blac border-blue-900 hover:bg-base hover:text-white rounded-lg shadow-2xl">Add

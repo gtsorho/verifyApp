@@ -44,7 +44,7 @@ export class CertificateComponent {
   }
   certificates: Certificate[] = [];
   isAdmin: boolean = true
-
+  isUpdateCertificate: boolean = false
   ngOnInit(): void {
     this.token = this.getCookie('token')
     this.getCertificates()
@@ -75,6 +75,33 @@ export class CertificateComponent {
         this.isLoader = false
       }, 3000);
     })
+  }
+
+
+  updateCertificate() {
+    this.isLoader = true
+    axios.put(this.baseUrl + '/certificate/'+this.certificate.id, this.certificate,
+      { 'headers': { 'authorization': 'Bearer ' + this.token }}
+    ).then((response) => {
+      this.getCertificates()
+      this.certificate = {
+        InstitutionId: 0,
+        certificate: '',
+        prefix: '',
+        count: 0,
+        category: '',
+        description: ''
+      }
+      this.isLoader = false
+    }).catch((error) => {
+      console.log(error);
+      this.isMsg = true
+      this.msg = error.response.data.message || error.response.data || error.response.data.error
+      setInterval(() => {
+        this.isMsg = false
+        this.isLoader = false
+      }, 3000);
+    })  
   }
 
   getCertificates() {

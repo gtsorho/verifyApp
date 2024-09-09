@@ -16,6 +16,7 @@ const index_1 = __importDefault(require("../models/index"));
 const joi_1 = __importDefault(require("joi"));
 const { QueryTypes } = require('sequelize');
 const institutionSchema = joi_1.default.object({
+    id: joi_1.default.string().optional(),
     name: joi_1.default.string().required(),
     description: joi_1.default.string().required(),
     location: joi_1.default.string().required(),

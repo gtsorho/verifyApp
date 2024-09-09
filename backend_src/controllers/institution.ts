@@ -4,6 +4,7 @@ import Joi from 'joi';
 const { QueryTypes } = require('sequelize');
 
 const institutionSchema = Joi.object({
+    id: Joi.string().optional(),
     name: Joi.string().required(),
     description: Joi.string().required(),
     location: Joi.string().required(),

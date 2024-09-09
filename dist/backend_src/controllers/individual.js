@@ -19,7 +19,7 @@ const xlsx_1 = __importDefault(require("xlsx"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const individualSchema = joi_1.default.object({
-    organization: joi_1.default.string().allow(null),
+    organization: joi_1.default.string().optional().allow(null, ''),
     ghana_card: joi_1.default.string().required()
 });
 const certificateIssuanceSchema = joi_1.default.object({
@@ -62,10 +62,10 @@ exports.default = {
                         },
                     ]
                 });
-                res.json(individuals);
+                const individualsList = yield models_1.default.individual.findAll({});
+                res.json([individuals, individualsList]);
             }
             else {
-                console.log(req.decodedToken);
                 const institutionId = (_b = req.decodedToken) === null || _b === void 0 ? void 0 : _b.InstitutionID;
                 const certificates = yield models_1.default.certificate.findAll({
                     where: {
@@ -85,7 +85,8 @@ exports.default = {
                             }
                         }]
                 });
-                res.json(individuals);
+                const individualsList = yield models_1.default.individual.findAll({});
+                res.json([individuals, individualsList]);
             }
         }
         catch (error) {
@@ -339,7 +340,30 @@ exports.default = {
                 }
             });
         });
-    }
+    },
+    searchIndividual: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const ghanaCard = req.query.searchVal;
+            let individuals;
+            if (ghanaCard) {
+                individuals = yield models_1.default.individual.findAll({
+                    where: {
+                        ghana_card: {
+                            [sequelize_1.Op.like]: `%${ghanaCard}%`
+                        }
+                    }
+                });
+            }
+            else {
+                individuals = yield models_1.default.individual.findAll();
+            }
+            res.json(individuals);
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }),
 };
 const checkAndCreateIndividual = (ghana_card, organization) => __awaiter(void 0, void 0, void 0, function* () {
     const individual = yield models_1.default.individual.findOne({ where: { ghana_card } });

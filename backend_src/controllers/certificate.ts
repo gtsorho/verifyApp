@@ -9,7 +9,7 @@ const certificateSchema = Joi.object({
     count: Joi.number(),
     category: Joi.string().required(),
     description: Joi.string().required(),
-    InstitutionId: Joi.string().allow(null)
+    InstitutionId: Joi.number().allow(null)
 });
 
 export default {
@@ -105,10 +105,10 @@ export default {
     updateCertificate: async (req: Request, res: Response) => {
         const { id } = req.params;
         try {
-            const { error } = certificateSchema.validate(req.body);
-            if (error) {
-                return res.status(400).json({ error: error.details[0].message });
-            }
+            // const { error } = certificateSchema.validate(req.body);
+            // if (error) {
+            //     return res.status(400).json({ error: error.details[0].message });
+            // }
 
             const [updated] = await db.certificate.update(req.body, { where: { id } });
             if (!updated) {

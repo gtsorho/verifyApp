@@ -20,7 +20,6 @@ export class IndividualService {
       });
     }
 
-    console.log(token)
     const url = `${this.baseUrl}/individual`;
     return new Observable((observer) => {
       axios
@@ -38,6 +37,33 @@ export class IndividualService {
         });
     });
   }
+  searchIndividuals(searchVal:string): Observable<any> {
+    const token = this.getCookie('token');
+    if (!token) {
+      return new Observable((observer) => {
+        observer.error('token is not provided');
+        observer.complete();
+      });
+    }
+
+    const url = `${this.baseUrl}/individual/search?searchVal=${searchVal}`;
+    return new Observable((observer) => {
+      axios
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          observer.next(response.data);
+          observer.complete();
+        })
+        .catch((error) => {
+          observer.error(error);
+        });
+    });
+  }
+
   verifyCert(ghana_cardNo: string, certificateNo: string): Observable<any> {
     const url = `${this.baseUrl}/individual/verify?ghana_cardNo=${ghana_cardNo}&certificate=${certificateNo}`;
     const token = this.getCookie('token');

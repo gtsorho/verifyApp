@@ -31,6 +31,7 @@ router.post('/upload_cert', (0, auth_1.default)(['admin', 'organization']), uplo
 router.post('/upload_Ind', (0, auth_1.default)(['admin', 'organization']), upload.single('excelFile'), individual_1.default.fileUploadIndividual);
 router.get('/download_cert', (0, auth_1.default)(['admin', 'organization']), individual_1.default.downloadFile);
 router.get('/download_Ind', (0, auth_1.default)(['admin', 'organization']), individual_1.default.downloadIndividualFile);
+router.get('/search', (0, auth_1.default)(['admin', 'organization']), individual_1.default.searchIndividual);
 router.get('/verify', individual_1.default.checkCertificateExists);
 router.get('/related', individual_1.default.findRelatedCertificates);
 router.post('/', (0, auth_1.default)(['admin', 'organization']), individual_1.default.createIndividual);
