@@ -283,7 +283,7 @@ export default {
                     const individual = await checkAndCreateIndividual(row['ghana_card/TIN'], row.organization);
                     const expiryDate = row.expiryDate; 
                     const issueDate = row.issueDate;
-                    return await handleCertificate(row.certificate, individual.id, expiryDate, issueDate);
+                    return await handleCertificate(row.prefix, individual.id, expiryDate, issueDate);
                   });
                 const results = await Promise.all(promises);
                 res.json(results);
@@ -394,11 +394,11 @@ const checkAndCreateIndividual = async (ghana_card: string, organization: string
     return individual;
   };
 
-  const handleCertificate = async (certificateName: string, individualId: number, expiryDate: string, issueDate: string) => {
-    const certificate = await db.certificate.findOne({ where: { prefix: certificateName } });
+  const handleCertificate = async (prefix: string, individualId: number, expiryDate: string, issueDate: string) => {
+    const certificate = await db.certificate.findOne({ where: { prefix: prefix } });
   
     if (!certificate) {
-      throw new Error(`Certificate ${certificateName} not found`);
+      throw new Error(`Certificate with prefix ${prefix} not found`);
     }
 
     const existingEntry = await db.certification_pivot.findOne({
