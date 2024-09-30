@@ -66,6 +66,14 @@ export class CertificateComponent {
     ).then((response) => {
       this.getCertificates()
       this.isLoader = false
+      this.certificate = {
+        InstitutionId: 0,
+        certificate: '',
+        prefix: '',
+        count: 0,
+        category: '',
+        description: ''
+      }
     }).catch((error) => {
       console.log(error);
       this.isMsg = true
